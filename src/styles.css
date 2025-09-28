@@ -110,3 +110,6 @@ textarea:focus-visible{
   input[type="time"], input[type="date"], input[type="number"]{ min-width:120px; }
   h1{ font-size:28px; }
 }
+
+.badge{ background:transparent; }
+.badge[aria-pressed="true"]{ border-color: var(--primary); }
