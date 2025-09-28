@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import AddEventModal from './AddEventModal'
 import FAB from './ui/FAB'
-import type { DayData } from '../types'
+import FilterChips from './FilterChips'
+import EventList, { countsByType } from './EventList'
+import type { DayData, FilterType } from '../types'
 
 export default function DailyLog() {
   const [date, setDate] = useState<string>(()=> new Date().toISOString().slice(0,10))
@@ -10,6 +12,7 @@ export default function DailyLog() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
+  const [filter, setFilter] = useState<FilterType>('all')
 
   async function load() {
     setLoading(true); setError(null)
@@ -23,37 +26,37 @@ export default function DailyLog() {
     setData((data?.data as DayData) ?? { feeds: [], diapers: [], sleeps: [], vitamins: [], weights: [], heights: [], others: [] })
   }
 
+  function prevDay() {
+    const d = new Date(date); d.setDate(d.getDate()-1); setDate(d.toISOString().slice(0,10))
+  }
+  function nextDay() {
+    const d = new Date(date); d.setDate(d.getDate()+1); setDate(d.toISOString().slice(0,10))
+  }
+
   useEffect(()=>{ load() }, [date])
+
+  const counts = countsByType(data ?? {feeds:[],diapers:[],sleeps:[],vitamins:[],weights:[],heights:[],others:[]})
 
   return (
     <div className="card">
       <h2>Daily Log</h2>
+
       <div className="row">
+        <button onClick={prevDay}>←</button>
         <input type="date" value={date} onChange={e=>setDate(e.target.value)} />
+        <button onClick={nextDay}>→</button>
         <button onClick={load}>Ricarica</button>
       </div>
+
+      <FilterChips value={filter} counts={counts} onChange={setFilter} />
 
       {loading && <p>Caricamento…</p>}
       {error && <p className="error">{error}</p>}
 
       {!loading && data && (
         <>
-          <div className="row" style={{marginTop:8}}>
-            <div className="badge">Feeds: {data.feeds.length}</div>
-            <div className="badge">Diapers: {data.diapers.length}</div>
-            <div className="badge">Sleep: {data.sleeps.length}</div>
-            <div className="badge">Vitamins: {data.vitamins.length}</div>
-            <div className="badge">Weights: {data.weights.length}</div>
-            <div className="badge">Heights: {data.heights.length}</div>
-          </div>
-
           <div className="hr" />
-
-          {data.others.length + data.feeds.length + data.diapers.length + data.sleeps.length +
-           data.vitamins.length + data.weights.length + data.heights.length === 0
-            ? <p className="small">Nessun evento. Premi “+” per aggiungerne uno.</p>
-            : <p className="small">Eventi caricati.</p>
-          }
+          <EventList dayData={data} date={date} filter={filter} onChanged={load} />
         </>
       )}
 
