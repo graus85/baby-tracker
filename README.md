@@ -1,4 +1,4 @@
-# Baby Tracker – Starter Repo (Web + Supabase)
+# Baby Tracker – Starter Repo (Web + Supabase) V1
 
 Minimal starter per mettere **subito in pista** il progetto su **GitHub + Vercel + Supabase**.
 Include:
