@@ -6,15 +6,8 @@ import type { DayData } from '../types'
 
 type DayRow = { date: string; data: DayData }
 
-// Sposta una data ISO (YYYY-MM-DD) avanti/indietro di N giorni
-function addDaysISO(iso: string, delta: number) {
-  const d = new Date(iso + 'T00:00:00')
-  d.setDate(d.getDate() + delta)
-  return d.toISOString().slice(0, 10)
-}
-
 export default function Summary() {
-  // from/to preimpostati su oggi (dinamico)
+  // ✅ from/to preimpostati a OGGI in modo dinamico
   const [from, setFrom] = useState<string>(() => todayISO())
   const [to, setTo] = useState<string>(() => todayISO())
 
@@ -35,16 +28,10 @@ export default function Summary() {
     setRows((data as any[])?.map(r => ({ date: r.date, data: r.data as DayData })) ?? [])
   }
 
-  // carica ogni volta che cambia l’intervallo
+  // ricarica quando cambia l'intervallo
   useEffect(() => { load() }, [from, to])
 
-  // frecce: mantengono la lunghezza dell’intervallo (qui 1 giorno) spostando entrambi
-  function shiftDays(delta: number) {
-    setFrom(prev => addDaysISO(prev, delta))
-    setTo(prev => addDaysISO(prev, delta))
-  }
-
-  // totali aggregati sull’intero intervallo
+  // totali aggregati nel periodo selezionato
   const totals = useMemo(() => {
     const empty = { feed:0, diaper:0, sleep:0, vitamin:0, weight:0, height:0, other:0 }
     return rows.reduce((acc, r) => {
@@ -58,17 +45,12 @@ export default function Summary() {
     <div className="card">
       <h2>Summary</h2>
 
-      <div className="row">
-        <button onClick={() => shiftDays(-1)} aria-label="Giorno precedente">←</button>
-
-        <div className="row" style={{ alignItems:'center' }}>
-          <label className="small">From</label>
-          <input type="date" value={from} onChange={e => setFrom(e.target.value)} />
-          <label className="small">To</label>
-          <input type="date" value={to} onChange={e => setTo(e.target.value)} />
-        </div>
-
-        <button onClick={() => shiftDays(+1)} aria-label="Giorno successivo">→</button>
+      {/* Barra controlli: SOLO i due datepicker centrati + Ricarica */}
+      <div className="row" style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <label className="small">From</label>
+        <input type="date" value={from} onChange={e => setFrom(e.target.value)} />
+        <label className="small">To</label>
+        <input type="date" value={to} onChange={e => setTo(e.target.value)} />
         <button onClick={load}>Ricarica</button>
       </div>
 
