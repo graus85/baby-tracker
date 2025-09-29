@@ -113,3 +113,6 @@ textarea:focus-visible{
 
 .badge{ background:transparent; }
 .badge[aria-pressed="true"]{ border-color: var(--primary); }
+
+svg { max-width: 100%; height: auto; }
+
