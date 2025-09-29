@@ -21,12 +21,14 @@ export default function DailyLog(){
       const uid = user.user?.id
       if(!uid) throw new Error('Non autenticato')
       const { data, error } = await supabase.from('v_day_data')
-        .select('data')
-        .eq('user_id', uid)
-        .eq('date', date)
-        .maybeSingle()
-      if(error) throw error
-      return (data?.data as DayData) ?? { feeds: [], diapers: [] }
+  .select('data')
+  .eq('user_id', uid)
+  .eq('date', date)
+  .limit(1);               // ← niente .single()/.maybeSingle()
+
+if (error) throw error;
+const row = (data ?? [])[0] as { data: DayData } | undefined;
+return row?.data ?? { feeds: [], diapers: [] }
     }
   })
 
