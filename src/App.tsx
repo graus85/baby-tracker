@@ -8,23 +8,31 @@ import More from './pages/More'
 
 export default function App() {
   const [isAuthed, setIsAuthed] = useState(false)
-  const [tab, setTab] = useState<TabKey>('daily')
 
-  useEffect(()=>{
+  // 👇 Impostiamo "summary" come tab iniziale (home)
+  const [tab, setTab] = useState<TabKey>('summary')
+
+  useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session))
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session)=>{ setIsAuthed(!!session) })
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthed(!!session)
+    })
     return () => { sub.subscription.unsubscribe() }
   }, [])
 
-  async function signOut() { await supabase.auth.signOut() }
+  async function signOut() {
+    await supabase.auth.signOut()
+    // opzionale: torna alla home (summary) dopo il logout
+    setTab('summary')
+  }
 
   return (
-    <div className="container" style={{paddingBottom:80}}>
+    <div className="container" style={{ paddingBottom: 80 }}>
       <h1>👶 Baby Tracker</h1>
       {isAuthed ? (
         <>
-          {tab === 'daily' && <DailyLog />}
           {tab === 'summary' && <Summary />}
+          {tab === 'daily' && <DailyLog />}
           {tab === 'more' && (
             <>
               <div className="row"><button onClick={signOut}>Esci</button></div>
@@ -34,7 +42,7 @@ export default function App() {
           <FooterTabs tab={tab} onChange={setTab} />
         </>
       ) : (
-        <Login onAuth={()=>setIsAuthed(true)} />
+        <Login onAuth={() => setIsAuthed(true)} />
       )}
     </div>
   )
