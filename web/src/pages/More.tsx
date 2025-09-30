@@ -1,57 +1,41 @@
-import { supabase } from '../lib/supabase'
 import { useTheme } from '../store/theme'
-import { useCallback } from 'react'
+import { Check } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
-type Mode = 'system' | 'dark' | 'light'
-
-const OPTIONS: { value: Mode; label: string }[] = [
+const appearanceOptions = [
   { value: 'system', label: 'System' },
-  { value: 'dark', label: 'Dark' },
-  { value: 'light', label: 'Light' },
-]
+  { value: 'dark',   label: 'Dark' },
+  { value: 'light',  label: 'Light' },
+] as const
 
-export default function More() {
+export default function More(){
   const { mode, setMode, resolved } = useTheme()
 
-  const onSelect = useCallback((m: Mode) => {
-    setMode(m)
-  }, [setMode])
-
-  const subtitle =
-    mode === 'system'
-      ? `Current: System → ${resolved}`
-      : `Current: ${mode === 'dark' ? 'Dark' : 'Light'}`
-
   return (
-    <div style={{ display: 'grid', gap: 16 }}>
+    <div style={{display:'grid', gap:16}}>
       <section>
         <h2 className="section-title">APP</h2>
         <div className="card">
           <div className="list-item header">
             <div>
               <div className="item-title">Appearance</div>
-              <div className="item-subtitle">{subtitle}</div>
+              <div className="item-subtitle">
+                {mode === 'system' ? `Current: System → ${resolved}` : `Current: ${mode === 'dark' ? 'Dark' : 'Light'}`}
+              </div>
             </div>
           </div>
-
-          <div className="list" role="radiogroup" aria-label="Appearance mode">
-            {OPTIONS.map((opt) => {
-              const selected = mode === opt.value
-              return (
-                <button
-                  key={opt.value}
-                  className="list-item"
-                  role="radio"
-                  aria-checked={selected}
-                  onClick={() => onSelect(opt.value)}
-                >
-                  <span>{opt.label}</span>
-                  <span aria-hidden="true" style={{ fontWeight: 700 }}>
-                    {selected ? '✓' : ''}
-                  </span>
-                </button>
-              )
-            })}
+          <div className="list">
+            {appearanceOptions.map(opt => (
+              <button
+                key={opt.value}
+                className="list-item"
+                onClick={()=>setMode(opt.value)}
+                aria-pressed={mode===opt.value}
+              >
+                <span>{opt.label}</span>
+                {mode===opt.value ? <Check size={18} aria-label="selected" /> : <span className="chevron" />}
+              </button>
+            ))}
           </div>
         </div>
       </section>
@@ -59,13 +43,7 @@ export default function More() {
       <section>
         <h2 className="section-title">ACCOUNT</h2>
         <div className="card">
-          <button
-            className="btn-danger"
-            onClick={async () => {
-              await supabase.auth.signOut()
-              window.location.href = '/login'
-            }}
-          >
+          <button className="btn-danger" onClick={()=>supabase.auth.signOut()}>
             Logout
           </button>
         </div>
