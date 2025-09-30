@@ -6,12 +6,14 @@ import App from './App'
 import Login from './pages/Login'
 import DailyLog from './pages/DailyLog'
 import Summary from './pages/Summary'
+import More from './pages/More'
 import './styles.css'
 
 const router = createBrowserRouter([
   { path: '/', element: <App />, children: [
     { index: true, element: <DailyLog /> },
     { path: 'summary', element: <Summary /> },
+    { path: 'more', element: <More /> },
   ]},
   { path: '/login', element: <Login /> }
 ])
