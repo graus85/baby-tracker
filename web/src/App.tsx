@@ -1,8 +1,9 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { supabase } from './lib/supabase'
 import { useEffect, useState } from 'react'
-import { Calendar, LogOut } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 import { useSelectedDate } from './store/ui'
+import { ThemeWatcher } from './store/theme'
 
 export default function App(){
   const nav = useNavigate()
@@ -23,25 +24,29 @@ export default function App(){
 
   return (
     <div className="container">
+      {/* mantiene il tema sincronizzato con le preferenze (system/dark/light) */}
+      <ThemeWatcher />
+
       <div className="heading">
         <h1>Baby Tracker</h1>
         <div style={{display:'flex', gap:8, alignItems:'center'}}>
           <small>{email}</small>
-          <button onClick={()=>supabase.auth.signOut()} title="Logout">
-            <LogOut size={16}/> Logout
-          </button>
         </div>
       </div>
+
       <div className="nav">
         <Link to="/">Diario</Link>
         <Link to="/summary">Riepilogo</Link>
+        <Link to="/more">Altro</Link>
       </div>
+
       <div className="card" style={{marginBottom:12}}>
         <label style={{display:'flex',gap:8,alignItems:'center'}}>
           <Calendar size={16}/> Giorno:&nbsp;
           <input className="input" type="date" value={date} onChange={e=>setDate(e.target.value)} />
         </label>
       </div>
+
       <Outlet />
     </div>
   )
