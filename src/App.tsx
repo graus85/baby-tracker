@@ -1,49 +1,53 @@
+import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { supabase } from './lib/supabase'
 import { useEffect, useState } from 'react'
-import { supabase } from './supabaseClient'
-import Login from './components/Login'
-import DailyLog from './components/DailyLog'
-import FooterTabs, { TabKey } from './components/FooterTabs'
-import Summary from './pages/Summary'
-import More from './pages/More'
+import { Calendar } from 'lucide-react'
+import { useSelectedDate } from './store/ui'
+import { ThemeWatcher } from './store/theme'
 
-export default function App() {
-  const [isAuthed, setIsAuthed] = useState(false)
-
-  // 👇 Impostiamo "summary" come tab iniziale (home)
-  const [tab, setTab] = useState<TabKey>('summary')
+export default function App(){
+  const nav = useNavigate()
+  const [email, setEmail] = useState<string | null>(null)
+  const { date, setDate } = useSelectedDate()
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setIsAuthed(!!data.session))
+    supabase.auth.getUser().then(({data}) => {
+      if(!data.user){ nav('/login'); return }
+      setEmail(data.user.email ?? null)
+    })
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthed(!!session)
+      if(!session) nav('/login')
+      setEmail(session?.user?.email ?? null)
     })
     return () => { sub.subscription.unsubscribe() }
   }, [])
 
-  async function signOut() {
-    await supabase.auth.signOut()
-    // opzionale: torna alla home (summary) dopo il logout
-    setTab('summary')
-  }
-
   return (
-    <div className="container" style={{ paddingBottom: 80 }}>
-      <h1>👶 Baby Tracker</h1>
-      {isAuthed ? (
-        <>
-          {tab === 'summary' && <Summary />}
-          {tab === 'daily' && <DailyLog />}
-          {tab === 'more' && (
-            <>
-              <div className="row"><button onClick={signOut}>Esci</button></div>
-              <More />
-            </>
-          )}
-          <FooterTabs tab={tab} onChange={setTab} />
-        </>
-      ) : (
-        <Login onAuth={() => setIsAuthed(true)} />
-      )}
+    <div className="container">
+      {/* mantiene il tema sincronizzato con le preferenze (system/dark/light) */}
+      <ThemeWatcher />
+
+      <div className="heading">
+        <h1>Baby Tracker</h1>
+        <div style={{display:'flex', gap:8, alignItems:'center'}}>
+          <small>{email}</small>
+        </div>
+      </div>
+
+      <div className="nav">
+        <Link to="/">Diario</Link>
+        <Link to="/summary">Riepilogo</Link>
+        <Link to="/more">Altro</Link>
+      </div>
+
+      <div className="card" style={{marginBottom:12}}>
+        <label style={{display:'flex',gap:8,alignItems:'center'}}>
+          <Calendar size={16}/> Giorno:&nbsp;
+          <input className="input" type="date" value={date} onChange={e=>setDate(e.target.value)} />
+        </label>
+      </div>
+
+      <Outlet />
     </div>
   )
 }
