@@ -1,0 +1,16 @@
+{
+  "app": { "title": "Baby Tracker", "day": "Giorno" },
+  "tabs": { "summary": "Riepilogo", "dailyLog": "Diario", "more": "Altro" },
+  "more": {
+    "app": "APP",
+    "account": "ACCOUNT",
+    "appearance": "Aspetto",
+    "language": "Lingua",
+    "current": "Corrente",
+    "system": "Sistema",
+    "dark": "Scuro",
+    "light": "Chiaro"
+  },
+  "auth": { "logout": "Esci" },
+  "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" }
+}
