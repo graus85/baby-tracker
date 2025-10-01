@@ -1,6 +1,5 @@
-// web/src/pages/Login.tsx
 import { useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase, SUPABASE_READY } from '../lib/supabase'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -9,14 +8,24 @@ export default function Login() {
   const [msg, setMsg] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
+  if (!SUPABASE_READY || !supabase) {
+    return (
+      <div className="card" style={{maxWidth:420, margin:'48px auto'}}>
+        <h2>Configuration required</h2>
+        <p>
+          Supabase is not configured. Add <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> on Vercel,
+          then redeploy.
+        </p>
+      </div>
+    )
+  }
+
   async function onSignup() {
     setLoading(true); setMsg(null)
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/`,
-      },
+      options: { emailRedirectTo: `${window.location.origin}/` },
     })
     setLoading(false)
     if (error) { setMsg(error.message); return }
@@ -25,7 +34,7 @@ export default function Login() {
 
   async function onSignin() {
     setLoading(true); setMsg(null)
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
     setLoading(false)
     if (error) { setMsg(error.message); return }
     window.location.href = '/'
@@ -46,7 +55,6 @@ export default function Login() {
   return (
     <div className="card" style={{maxWidth:420, margin:'48px auto'}}>
       <h2>{mode === 'signin' ? 'Sign in' : 'Create account'}</h2>
-
       <div className="row" style={{display:'grid', gap:8}}>
         <input className="input" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
         <input className="input" placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
@@ -62,7 +70,6 @@ export default function Login() {
           {mode==='signin' ? 'Need an account? Sign up' : 'Back to sign in'}
         </button>
       </div>
-
       {msg && <p style={{marginTop:12, color:'var(--muted)'}}>{msg}</p>}
     </div>
   )
