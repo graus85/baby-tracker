@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -9,7 +9,7 @@ import DailyLog from './pages/DailyLog'
 import More from './pages/More'
 import Login from './pages/Login'
 import './styles.css'
-import './i18n' // 👈 inizializza i18n
+import './i18n' // i18n init
 
 const router = createBrowserRouter([
   {
@@ -28,10 +28,27 @@ const router = createBrowserRouter([
 
 const client = new QueryClient()
 
+function BootFallback() {
+  return (
+    <div style={{
+      minHeight: '100dvh',
+      display: 'grid',
+      placeItems: 'center',
+      color: 'var(--fg)',
+      background: 'var(--bg)'
+    }}>
+      <div>Loading…</div>
+    </div>
+  )
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={client}>
-      <RouterProvider router={router} />
+      {/* Anche se per ora useSuspense=false, teniamo un fallback “di sicurezza” */}
+      <Suspense fallback={<BootFallback />}>
+        <RouterProvider router={router} />
+      </Suspense>
     </QueryClientProvider>
   </React.StrictMode>
 )
