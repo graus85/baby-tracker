@@ -4,11 +4,12 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import App from './App'
-import Summary from './pages/Summary'     // tieni i tuoi file se già esistono
+import Summary from './pages/Summary'
 import DailyLog from './pages/DailyLog'
 import More from './pages/More'
 import Login from './pages/Login'
 import './styles.css'
+import './i18n' // 👈 inizializza i18n
 
 const router = createBrowserRouter([
   {
@@ -18,7 +19,6 @@ const router = createBrowserRouter([
       { index: true, element: <DailyLog /> },
       { path: 'summary', element: <Summary /> },
       { path: 'more', element: <More /> },
-      // alias per compatibilità col vecchio tab
       { path: 'settings', element: <More /> },
       { path: '*', element: <Navigate to="/" replace /> }
     ]
