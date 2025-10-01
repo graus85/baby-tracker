@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react'
 import { ThemeWatcher } from './store/theme'
 import { useSelectedDate } from './store/ui'
 import TabBar from './components/TabBar'
+import { useTranslation } from 'react-i18next'
 
 export default function App(){
   const nav = useNavigate()
   const [email, setEmail] = useState<string | null>(null)
   const { date, setDate } = useSelectedDate()
+  const { t } = useTranslation()
 
   useEffect(() => {
     supabase.auth.getUser().then(({data}) => {
@@ -26,10 +28,9 @@ export default function App(){
     <div className="app-shell">
       <ThemeWatcher />
 
-      {/* 👇 ora il contenuto è full-page responsive */}
       <main className="content">
         <div className="heading">
-          <h1>Baby Tracker</h1>
+          <h1>{t('app.title')}</h1>
           <div style={{display:'flex', gap:8, alignItems:'center'}}>
             <small>{email}</small>
           </div>
@@ -37,7 +38,7 @@ export default function App(){
 
         <div className="card" style={{marginBottom:12}}>
           <label style={{display:'flex',gap:8,alignItems:'center'}}>
-            <span>Day:</span>
+            <span>{t('app.day')}:</span>
             <input className="input" type="date" value={date} onChange={e=>setDate(e.target.value)} />
           </label>
         </div>
