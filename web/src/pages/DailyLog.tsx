@@ -2,6 +2,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSelectedDate } from '../store/ui'
 import { supabase } from '../lib/supabase'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+const { t } = useTranslation()
+
+// poi: t('tabs.summary'), t('tabs.dailyLog') o chiavi nuove che aggiungi a common.json
+
 
 type Feed = { id:string; time:string; amount?:number; unit?:'ml'|'oz'; method:'breast'|'bottle'; side?:'left'|'right'; durationSec?:number; milkType?:string; note?:string }
 type Diaper = { id:string; time:string; pee:boolean; poop:boolean; note?:string }
