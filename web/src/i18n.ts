@@ -2,7 +2,6 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 
-// Risorse statiche (facili da estendere)
 import en from './locales/en/common.json'
 import it from './locales/it/common.json'
 import fr from './locales/fr/common.json'
@@ -25,9 +24,11 @@ void i18n
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
     },
+    // 👇 importantissimo: niente Suspense => niente “schermata vuota”
+    react: { useSuspense: false },
   })
 
-// Aggiorna <html lang=""> quando cambia lingua
+// Aggiorna <html lang="">
 i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng
 })
