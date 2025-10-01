@@ -1,0 +1,16 @@
+{
+  "app": { "title": "Baby Tracker", "day": "Day" },
+  "tabs": { "summary": "Summary", "dailyLog": "Daily Log", "more": "More" },
+  "more": {
+    "app": "APP",
+    "account": "ACCOUNT",
+    "appearance": "Appearance",
+    "language": "Language",
+    "current": "Current",
+    "system": "System",
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "auth": { "logout": "Logout" },
+  "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" }
+}
