@@ -8,23 +8,27 @@ import Summary from './pages/Summary'
 import DailyLog from './pages/DailyLog'
 import More from './pages/More'
 import Login from './pages/Login'
-import Health from './pages/Health'   // 👈 aggiunta
+import Health from './pages/Health'     // health page
+import ErrorBoundary from './components/ErrorBoundary'
 import './styles.css'
 import './i18n'
 
+const appRoutes = {
+  path: '/',
+  element: <App />,
+  children: [
+    { index: true, element: <DailyLog /> },
+    { path: 'summary', element: <Summary /> },
+    { path: 'more', element: <More /> },
+    { path: 'settings', element: <More /> },
+    { path: '*', element: <Navigate to="/" replace /> }
+  ]
+}
+
 const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    children: [
-      { index: true, element: <DailyLog /> },
-      { path: 'summary', element: <Summary /> },
-      { path: 'more', element: <More /> },
-      { path: 'settings', element: <More /> },
-      { path: 'health', element: <Health /> },   // 👈 nuova pagina
-      { path: '*', element: <Navigate to="/" replace /> }
-    ]
-  },
+  appRoutes,
+  // Health è anche top-level: si apre pure se App avesse errori
+  { path: '/health', element: <Health /> },
   { path: '/login', element: <Login /> }
 ])
 
@@ -32,13 +36,7 @@ const client = new QueryClient()
 
 function BootFallback() {
   return (
-    <div style={{
-      minHeight: '100dvh',
-      display: 'grid',
-      placeItems: 'center',
-      color: 'var(--fg)',
-      background: 'var(--bg)'
-    }}>
+    <div style={{minHeight:'100dvh',display:'grid',placeItems:'center',color:'var(--fg)',background:'var(--bg)'}}>
       <div>Loading…</div>
     </div>
   )
@@ -48,7 +46,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={client}>
       <Suspense fallback={<BootFallback />}>
-        <RouterProvider router={router} />
+        <ErrorBoundary>
+          <RouterProvider router={router} />
+        </ErrorBoundary>
       </Suspense>
     </QueryClientProvider>
   </React.StrictMode>
