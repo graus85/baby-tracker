@@ -1,10 +1,28 @@
 import { Outlet, useNavigate } from 'react-router-dom'
-import { supabase } from './lib/supabase'
+import { supabase, SUPABASE_READY } from './lib/supabase'
 import { useEffect, useState } from 'react'
 import { ThemeWatcher } from './store/theme'
 import { useSelectedDate } from './store/ui'
 import TabBar from './components/TabBar'
 import { useTranslation } from 'react-i18next'
+
+function ConfigError() {
+  return (
+    <div className="content">
+      <div className="card" style={{maxWidth:640, margin:'48px auto'}}>
+        <h2>Configuration required</h2>
+        <p>
+          Missing <code>VITE_SUPABASE_URL</code> and/or <code>VITE_SUPABASE_ANON_KEY</code>.
+        </p>
+        <ol style={{lineHeight:1.7}}>
+          <li>Vercel → <b>Project → Settings → Environment Variables</b></li>
+          <li>Aggiungi entrambe le variabili (Production + Preview)</li>
+          <li>Redeploy del progetto</li>
+        </ol>
+      </div>
+    </div>
+  )
+}
 
 export default function App(){
   const nav = useNavigate()
@@ -12,7 +30,9 @@ export default function App(){
   const { date, setDate } = useSelectedDate()
   const { t } = useTranslation()
 
+  // Evita qualsiasi chiamata a supabase se non è configurato
   useEffect(() => {
+    if (!SUPABASE_READY || !supabase) return
     supabase.auth.getUser().then(({data}) => {
       if(!data.user){ nav('/login'); return }
       setEmail(data.user.email ?? null)
@@ -21,8 +41,17 @@ export default function App(){
       if(!session) nav('/login')
       setEmail(session?.user?.email ?? null)
     })
-    return () => { sub.subscription.unsubscribe() }
+    return () => { sub?.subscription?.unsubscribe?.() }
   }, [nav])
+
+  if (!SUPABASE_READY) {
+    return (
+      <div className="app-shell">
+        <ThemeWatcher />
+        <ConfigError />
+      </div>
+    )
+  }
 
   return (
     <div className="app-shell">
