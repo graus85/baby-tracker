@@ -1,8 +1,9 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { supabase } from './lib/supabase'
 import { useEffect, useState } from 'react'
 import { ThemeWatcher } from './store/theme'
 import { useSelectedDate } from './store/ui'
+import TabBar from './components/TabBar'
 
 export default function App(){
   const nav = useNavigate()
@@ -22,31 +23,29 @@ export default function App(){
   }, [nav])
 
   return (
-    <div className="container">
+    <div className="app-shell">
       <ThemeWatcher />
 
-      <div className="heading">
-        <h1>Baby Tracker</h1>
-        <div style={{display:'flex', gap:8, alignItems:'center'}}>
-          <small>{email}</small>
+      <main className="content container">
+        <div className="heading">
+          <h1>Baby Tracker</h1>
+          <div style={{display:'flex', gap:8, alignItems:'center'}}>
+            <small>{email}</small>
+          </div>
         </div>
-      </div>
 
-      {/* assicurati che il tab "More" punti a /more (o /settings che alias a /more nel router) */}
-      <div className="nav">
-        <Link to="/">Daily Log</Link>
-        <Link to="/summary">Summary</Link>
-        <Link to="/more">More</Link>
-      </div>
+        <div className="card" style={{marginBottom:12}}>
+          <label style={{display:'flex',gap:8,alignItems:'center'}}>
+            <span>Day:</span>
+            <input className="input" type="date" value={date} onChange={e=>setDate(e.target.value)} />
+          </label>
+        </div>
 
-      <div className="card" style={{marginBottom:12}}>
-        <label style={{display:'flex',gap:8,alignItems:'center'}}>
-          <span>Day:</span>
-          <input className="input" type="date" value={date} onChange={e=>setDate(e.target.value)} />
-        </label>
-      </div>
+        <Outlet />
+      </main>
 
-      <Outlet />
+      {/* Footer con i 3 bottoni */}
+      <TabBar />
     </div>
   )
 }
