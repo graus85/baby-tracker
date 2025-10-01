@@ -1,5 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
+import { useTranslation } from 'react-i18next'
+const { t } = useTranslation()
+
+// poi: t('tabs.summary'), t('tabs.dailyLog') o chiavi nuove che aggiungi a common.json
+
 
 export default function Summary(){
   const q = useQuery({
