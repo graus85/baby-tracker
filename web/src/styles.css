@@ -29,31 +29,58 @@ body{
 }
 a{ color: var(--acc); text-decoration: none }
 
-/* APP LAYOUT */
-.app-shell{ min-height:100dvh; display:flex; flex-direction:column }
-.content{ flex:1 1 auto; padding-bottom:calc(78px + env(safe-area-inset-bottom)); }
-.container{ max-width:960px; margin:0 auto; padding:16px }
+/* ============ APP LAYOUT FULL PAGE ============ */
+.app-shell{
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Il contenuto copre tutta la pagina e tiene conto del footer */
+.content{
+  flex:1 1 auto;
+  /* padding top/side responsive + spazio per il tabbar (72px ca) e la safe-area iOS */
+  padding:16px clamp(12px, 4vw, 24px) calc(84px + env(safe-area-inset-bottom));
+  width:100%;
+}
+
+/* Titolo + email */
 .heading{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px }
 
-/* UI */
-.card{ background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px }
+/* CARD / FORM */
+.card{
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+  width:100%;
+}
 .input, select, button{
-  width:100%; padding:10px; border-radius:10px;
-  border:1px solid var(--border); background: var(--soft); color: var(--fg);
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background: var(--soft);
+  color: var(--fg);
 }
 button{ cursor:pointer }
 small{ color: var(--muted) }
 
 /* SETTINGS PAGE */
 .section-title{
-  margin:0 0 8px 4px; font-size:12px; letter-spacing:.06em;
-  text-transform:uppercase; color: var(--muted);
+  margin:0 0 8px 4px;
+  font-size:12px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color: var(--muted);
 }
 .list{ display:flex; flex-direction:column; border-radius:8px; overflow:hidden; border:1px solid var(--border) }
 .list-item{
   display:flex; align-items:center; justify-content:space-between;
-  padding:12px 14px; gap:12px; background: var(--card);
+  padding:12px 14px; gap:12px;
+  background: var(--card);
   border-bottom:1px solid var(--border);
+  width:100%;
 }
 .list-item:last-child{ border-bottom:0 }
 .list-item.header{ border:0; border-radius:8px 8px 0 0; padding-bottom:8px; background: transparent }
@@ -73,14 +100,4 @@ small{ color: var(--muted) }
 .tab{
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   padding:8px 6px; border-radius:12px; background: var(--soft);
-  color: var(--muted); text-align:center; font-size:12px; line-height:1;
-}
-.tabbar .tab svg{ /* <- più specifico, blocca la dimensione a 22px anche se il CSS non carica in tempo */
-  width:22px; height:22px; display:block; flex:0 0 22px;
-}
-.tab.active{
-  color: var(--fg);
-  background: color-mix(in oklab, var(--acc) 18%, var(--soft));
-}
-.tab-label{ font-size:11px }
-
+  color: var(--muted); text-ali
