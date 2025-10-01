@@ -26,7 +26,8 @@ export default function App(){
     <div className="app-shell">
       <ThemeWatcher />
 
-      <main className="content container">
+      {/* 👇 ora il contenuto è full-page responsive */}
+      <main className="content">
         <div className="heading">
           <h1>Baby Tracker</h1>
           <div style={{display:'flex', gap:8, alignItems:'center'}}>
@@ -44,7 +45,6 @@ export default function App(){
         <Outlet />
       </main>
 
-      {/* Footer con i 3 bottoni */}
       <TabBar />
     </div>
   )
