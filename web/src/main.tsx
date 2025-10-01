@@ -8,8 +8,9 @@ import Summary from './pages/Summary'
 import DailyLog from './pages/DailyLog'
 import More from './pages/More'
 import Login from './pages/Login'
+import Health from './pages/Health'   // 👈 aggiunta
 import './styles.css'
-import './i18n' // i18n init
+import './i18n'
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: 'summary', element: <Summary /> },
       { path: 'more', element: <More /> },
       { path: 'settings', element: <More /> },
+      { path: 'health', element: <Health /> },   // 👈 nuova pagina
       { path: '*', element: <Navigate to="/" replace /> }
     ]
   },
@@ -45,7 +47,6 @@ function BootFallback() {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={client}>
-      {/* Anche se per ora useSuspense=false, teniamo un fallback “di sicurezza” */}
       <Suspense fallback={<BootFallback />}>
         <RouterProvider router={router} />
       </Suspense>
