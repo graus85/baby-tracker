@@ -8,19 +8,26 @@ import Summary from './pages/Summary'
 import DailyLog from './pages/DailyLog'
 import More from './pages/More'
 import Login from './pages/Login'
-import Health from './pages/Health'
+import Health from './pages/Health'     // health page
 import ErrorBoundary from './components/ErrorBoundary'
 import './styles.css'
 import './i18n'
 
-const router = createBrowserRouter([
-  { path: '/', element: <App />, children: [
+const appRoutes = {
+  path: '/',
+  element: <App />,
+  children: [
     { index: true, element: <DailyLog /> },
     { path: 'summary', element: <Summary /> },
     { path: 'more', element: <More /> },
     { path: 'settings', element: <More /> },
     { path: '*', element: <Navigate to="/" replace /> }
-  ]},
+  ]
+}
+
+const router = createBrowserRouter([
+  appRoutes,
+  // Health è anche top-level: si apre pure se App avesse errori
   { path: '/health', element: <Health /> },
   { path: '/login', element: <Login /> }
 ])
@@ -35,8 +42,7 @@ function BootFallback() {
   )
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root')!)
-root.render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={client}>
       <Suspense fallback={<BootFallback />}>
