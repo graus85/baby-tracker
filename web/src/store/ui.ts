@@ -1,14 +1,29 @@
 import { create } from 'zustand'
-import { formatISO } from 'date-fns'
+import { persist } from 'zustand/middleware'
 
 type UIState = {
+  /** Formato YYYY-MM-DD usato dall'input date */
   date: string
-  setDate: (d: string) => void
+  setDate: (v: string) => void
+  resetToday: () => void
 }
 
-const todayISO = new Date().toISOString().slice(0,10)
+function today(): string {
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${dd}`
+}
 
-export const useSelectedDate = create<UIState>((set) => ({
-  date: todayISO,
-  setDate: (d)=>set({date: d || todayISO})
-}))
+/** Stato UI condiviso e persistito in localStorage */
+export const useSelectedDate = create<UIState>()(
+  persist(
+    (set) => ({
+      date: today(),
+      setDate: (v) => set({ date: v }),
+      resetToday: () => set({ date: today() }),
+    }),
+    { name: 'bt.ui.selectedDate' }
+  )
+)
