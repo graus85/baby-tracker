@@ -12,5 +12,44 @@
     "light": "Clair"
   },
   "auth": { "logout": "Déconnexion" },
-  "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" }
+  "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" },
+
+  "add": {
+    "title": "Enregistrer un événement",
+    "feed": "Repas",
+    "diaper": "Couches",
+    "sleep": "Sommeil",
+    "vitamin": "Vitamines",
+    "weight": "Poids",
+    "height": "Taille",
+    "other": "Autre"
+  },
+  "fields": {
+    "date": "Date",
+    "time": "Heure",
+    "start": "Début",
+    "end": "Fin",
+    "notes": "Notes",
+    "observations": "Observations",
+    "name": "Type",
+    "dose": "Dose",
+    "kg": "Poids (kg)",
+    "cm": "Taille (cm)",
+    "pee": "Pipi",
+    "poop": "Caca",
+    "breast": "Allaitement",
+    "bottle": "Biberon",
+    "quantityMl": "Quantité (ml)",
+    "durationMin": "Durée (min)",
+    "durationSec": "Durée (sec)",
+    "milkType": "Type de lait",
+    "milkTypePlaceholder": "(ex. lait infantile)",
+    "sideLeft": "Sein gauche",
+    "sideRight": "Sein droit"
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "add": "Ajouter"
+  }
 }
