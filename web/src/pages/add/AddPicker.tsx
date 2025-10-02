@@ -1,20 +1,22 @@
 import { Link } from 'react-router-dom'
-
-const items = [
-  { to: '/add/feed', label: 'Pasto' },
-  { to: '/add/diaper', label: 'Pannolino' },
-  { to: '/add/sleep', label: 'Sonno' },
-  { to: '/add/vitamin', label: 'Vitamine' },
-  { to: '/add/weight', label: 'Peso' },
-  { to: '/add/height', label: 'Altezza' },
-  { to: '/add/other', label: 'Altro' },
-]
+import { useTranslation } from 'react-i18next'
 
 export default function AddPicker(){
+  const { t } = useTranslation()
+  const items = [
+    { to: '/add/feed',   label: t('add.feed') },
+    { to: '/add/diaper', label: t('add.diaper') },
+    { to: '/add/sleep',  label: t('add.sleep') },
+    { to: '/add/vitamin',label: t('add.vitamin') },
+    { to: '/add/weight', label: t('add.weight') },
+    { to: '/add/height', label: t('add.height') },
+    { to: '/add/other',  label: t('add.other') },
+  ]
+
   return (
     <div className="content">
       <div className="card" style={{maxWidth:520, margin:'16px auto'}}>
-        <h2>Registra evento</h2>
+        <h2>{t('add.title')}</h2>
         <div style={{display:'grid', gap:8, marginTop:12}}>
           {items.map(i=>(
             <Link key={i.to} to={i.to} className="tab" style={{textDecoration:'none', textAlign:'center'}}>
