@@ -12,5 +12,44 @@
     "light": "Claro"
   },
   "auth": { "logout": "Cerrar sesión" },
-  "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" }
+  "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" },
+
+  "add": {
+    "title": "Registrar evento",
+    "feed": "Comida",
+    "diaper": "Pañal",
+    "sleep": "Sueño",
+    "vitamin": "Vitaminas",
+    "weight": "Peso",
+    "height": "Altura",
+    "other": "Otro"
+  },
+  "fields": {
+    "date": "Fecha",
+    "time": "Hora",
+    "start": "Inicio",
+    "end": "Fin",
+    "notes": "Notas",
+    "observations": "Observaciones",
+    "name": "Tipo",
+    "dose": "Dosis",
+    "kg": "Peso (kg)",
+    "cm": "Altura (cm)",
+    "pee": "Pipí",
+    "poop": "Popó",
+    "breast": "Pecho",
+    "bottle": "Biberón",
+    "quantityMl": "Cantidad (ml)",
+    "durationMin": "Duración (min)",
+    "durationSec": "Duración (seg)",
+    "milkType": "Tipo de leche",
+    "milkTypePlaceholder": "(p. ej. fórmula)",
+    "sideLeft": "Pecho izquierdo",
+    "sideRight": "Pecho derecho"
+  },
+  "actions": {
+    "save": "Guardar",
+    "saved": "Guardado",
+    "add": "Añadir"
+  }
 }
