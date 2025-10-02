@@ -1,6 +1,7 @@
 {
   "app": { "title": "Baby Tracker", "day": "Día" },
   "tabs": { "summary": "Resumen", "dailyLog": "Registro diario", "more": "Más" },
+
   "more": {
     "app": "APP",
     "account": "CUENTA",
@@ -11,7 +12,9 @@
     "dark": "Oscuro",
     "light": "Claro"
   },
+
   "auth": { "logout": "Cerrar sesión" },
+
   "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" },
 
   "add": {
@@ -24,6 +27,7 @@
     "height": "Altura",
     "other": "Otro"
   },
+
   "fields": {
     "date": "Fecha",
     "time": "Hora",
@@ -47,14 +51,9 @@
     "sideLeft": "Pecho izquierdo",
     "sideRight": "Pecho derecho"
   },
-  "actions": {
-    "save": "Guardar",
-    "saved": "Guardado",
-    "add": "Añadir"
-  }
-}
-{
+
   "filters": { "from": "Desde", "to": "Hasta", "all": "Todos" },
+
   "kinds": {
     "feed": "Comida",
     "diaper": "Pañal",
@@ -64,5 +63,16 @@
     "height": "Altura",
     "other": "Otro"
   },
-  "state": { "loading": "Cargando…", "empty": "No hay eventos en este rango." }
+
+  "state": { "loading": "Cargando…", "empty": "No hay eventos en este rango." },
+
+  "actions": {
+    "save": "Guardar",
+    "saved": "Guardado",
+    "add": "Añadir",
+    "edit": "Editar",
+    "duplicate": "Duplicar",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar este elemento?"
+  }
 }
