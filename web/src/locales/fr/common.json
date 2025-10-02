@@ -53,3 +53,16 @@
     "add": "Ajouter"
   }
 }
+{
+  "filters": { "from": "Du", "to": "Au", "all": "Tous" },
+  "kinds": {
+    "feed": "Repas",
+    "diaper": "Couches",
+    "sleep": "Sommeil",
+    "vitamin": "Vitamines",
+    "weight": "Poids",
+    "height": "Taille",
+    "other": "Autre"
+  },
+  "state": { "loading": "Chargement…", "empty": "Aucun événement dans cette période." }
+}
