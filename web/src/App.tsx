@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { ThemeWatcher } from './store/theme'
 import { useSelectedDate } from './store/ui'
 import TabBar from './components/TabBar'
+import Fab from './components/Fab'
 import { useTranslation } from 'react-i18next'
 
 function ConfigError() {
@@ -11,14 +12,7 @@ function ConfigError() {
     <div className="content">
       <div className="card" style={{maxWidth:640, margin:'48px auto'}}>
         <h2>Configuration required</h2>
-        <p>
-          Missing <code>VITE_SUPABASE_URL</code> and/or <code>VITE_SUPABASE_ANON_KEY</code>.
-        </p>
-        <ol style={{lineHeight:1.7}}>
-          <li>Vercel → <b>Project → Settings → Environment Variables</b></li>
-          <li>Aggiungi entrambe le variabili (Production + Preview)</li>
-          <li>Redeploy del progetto</li>
-        </ol>
+        <p>Missing <code>VITE_SUPABASE_URL</code> or <code>VITE_SUPABASE_ANON_KEY</code>.</p>
       </div>
     </div>
   )
@@ -30,7 +24,6 @@ export default function App(){
   const { date, setDate } = useSelectedDate()
   const { t } = useTranslation()
 
-  // Evita qualsiasi chiamata a supabase se non è configurato
   useEffect(() => {
     if (!SUPABASE_READY || !supabase) return
     supabase.auth.getUser().then(({data}) => {
@@ -75,6 +68,8 @@ export default function App(){
         <Outlet />
       </main>
 
+      {/* FAB + footer */}
+      <Fab />
       <TabBar />
     </div>
   )
