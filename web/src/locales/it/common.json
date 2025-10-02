@@ -1,6 +1,7 @@
 {
   "app": { "title": "Baby Tracker", "day": "Giorno" },
   "tabs": { "summary": "Riepilogo", "dailyLog": "Diario", "more": "Altro" },
+
   "more": {
     "app": "APP",
     "account": "ACCOUNT",
@@ -11,7 +12,9 @@
     "dark": "Scuro",
     "light": "Chiaro"
   },
+
   "auth": { "logout": "Esci" },
+
   "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" },
 
   "add": {
@@ -24,6 +27,7 @@
     "height": "Altezza",
     "other": "Altro"
   },
+
   "fields": {
     "date": "Data",
     "time": "Ora",
@@ -47,14 +51,9 @@
     "sideLeft": "Seno sinistro",
     "sideRight": "Seno destro"
   },
-  "actions": {
-    "save": "Salva",
-    "saved": "Salvato",
-    "add": "Aggiungi"
-  }
-}
-{
+
   "filters": { "from": "Dal", "to": "Al", "all": "Tutti" },
+
   "kinds": {
     "feed": "Pasto",
     "diaper": "Pannolino",
@@ -64,8 +63,16 @@
     "height": "Altezza",
     "other": "Altro"
   },
-  "state": { "loading": "Caricamento…", "empty": "Nessun evento nell'intervallo." }
-}
-{
-  "actions": { "edit": "Modifica", "duplicate": "Duplica", "delete": "Elimina", "deleteConfirm": "Eliminare questo elemento?" }
+
+  "state": { "loading": "Caricamento…", "empty": "Nessun evento nell'intervallo." },
+
+  "actions": {
+    "save": "Salva",
+    "saved": "Salvato",
+    "add": "Aggiungi",
+    "edit": "Modifica",
+    "duplicate": "Duplica",
+    "delete": "Elimina",
+    "deleteConfirm": "Eliminare questo elemento?"
+  }
 }
