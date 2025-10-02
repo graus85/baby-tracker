@@ -53,3 +53,16 @@
     "add": "Aggiungi"
   }
 }
+{
+  "filters": { "from": "Dal", "to": "Al", "all": "Tutti" },
+  "kinds": {
+    "feed": "Pasto",
+    "diaper": "Pannolino",
+    "sleep": "Sonno",
+    "vitamin": "Vitamine",
+    "weight": "Peso",
+    "height": "Altezza",
+    "other": "Altro"
+  },
+  "state": { "loading": "Caricamento…", "empty": "Nessun evento nell'intervallo." }
+}
