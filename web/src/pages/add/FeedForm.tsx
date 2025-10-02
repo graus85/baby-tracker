@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { insertFeed } from '../../lib/api'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { getById, insertFeed, updateFeed } from '../../lib/api'
 import { todayISO, nowTimeLocal, toPgTimeWithTZ } from '../../lib/datetime'
 import { useSelectedDate } from '../../store/ui'
 import { useTranslation } from 'react-i18next'
@@ -9,10 +9,14 @@ export default function FeedForm(){
   const { t } = useTranslation()
   const nav = useNavigate()
   const { date: selDate } = useSelectedDate()
+  const [sp] = useSearchParams()
+  const id = sp.get('id')
+  const isEdit = useMemo(()=> Boolean(id), [id])
+
   const [date, setDate] = useState(selDate || todayISO())
-  const [time, setTime] = useState(nowTimeLocal().slice(0,5)) // HH:MM
+  const [time, setTime] = useState(nowTimeLocal().slice(0,5))
   const [method, setMethod] = useState<'breast'|'bottle'>('breast')
-  const [amount, setAmount] = useState<string>('')
+  const [amount, setAmount] = useState<string>('120')
   const [durationMin, setDurationMin] = useState<string>('0')
   const [durationSec, setDurationSec] = useState<string>('0')
   const [milkType, setMilkType] = useState('')
@@ -20,12 +24,33 @@ export default function FeedForm(){
   const [note, setNote] = useState('')
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    if (!id) return
+    ;(async () => {
+      try{
+        const row = await getById('feeds', id)
+        setDate(row.date)
+        const tm = String(row.time).slice(0,5)
+        setTime(tm)
+        setMethod(row.method)
+        setAmount(row.amount ? String(row.amount) : '')
+        setDurationMin(row.duration_sec ? String(Math.floor(row.duration_sec/60)) : '0')
+        setDurationSec(row.duration_sec ? String(row.duration_sec%60) : '0')
+        setMilkType(row.milk_type || '')
+        setSide(row.side || 'left')
+        setNote(row.note || '')
+      }catch(e:any){
+        alert(e.message || String(e))
+      }
+    })()
+  }, [id])
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     try {
       const dur = Number(durationMin) * 60 + Number(durationSec)
-      await insertFeed({
+      const payload = {
         date,
         time: toPgTimeWithTZ(time + ':00'),
         method,
@@ -35,7 +60,9 @@ export default function FeedForm(){
         milk_type: method === 'bottle' && milkType ? milkType : null,
         side: method === 'breast' ? side : null,
         note: note || null
-      })
+      }
+      if (isEdit && id) await updateFeed(id, payload)
+      else await insertFeed(payload)
       alert(t('actions.saved'))
       nav('/')
     } catch (err:any) {
@@ -48,7 +75,7 @@ export default function FeedForm(){
   return (
     <div className="content">
       <form className="card" onSubmit={onSubmit} style={{maxWidth:640, margin:'16px auto', display:'grid', gap:12}}>
-        <h2>{t('add.feed')}</h2>
+        <h2>{isEdit ? t('actions.edit') : t('add.feed')}</h2>
 
         <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
           <label>{t('fields.date')}<input className="input" type="date" value={date} onChange={e=>setDate(e.target.value)} /></label>
