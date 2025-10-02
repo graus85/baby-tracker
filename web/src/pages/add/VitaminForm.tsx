@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { insertVitamin } from '../../lib/api'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { getById, insertVitamin, updateVitamin } from '../../lib/api'
 import { todayISO, nowTimeLocal, toPgTimeWithTZ } from '../../lib/datetime'
 import { useSelectedDate } from '../../store/ui'
 import { useTranslation } from 'react-i18next'
@@ -9,6 +9,10 @@ export default function VitaminForm(){
   const { t } = useTranslation()
   const nav = useNavigate()
   const { date: selDate } = useSelectedDate()
+  const [sp] = useSearchParams()
+  const id = sp.get('id')
+  const isEdit = useMemo(()=> Boolean(id), [id])
+
   const [date, setDate] = useState(selDate || todayISO())
   const [time, setTime] = useState(nowTimeLocal().slice(0,5))
   const [name, setName] = useState('')
@@ -16,10 +20,26 @@ export default function VitaminForm(){
   const [note, setNote] = useState('')
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    if (!id) return
+    ;(async () => {
+      try{
+        const row = await getById('vitamins', id)
+        setDate(row.date)
+        setTime(String(row.time).slice(0,5))
+        setName(row.name || '')
+        setDose(row.dose || '')
+        setNote(row.note || '')
+      }catch(e:any){ alert(e.message || String(e)) }
+    })()
+  }, [id])
+
   async function onSubmit(e: React.FormEvent){
     e.preventDefault(); setLoading(true)
     try{
-      await insertVitamin({ date, time: toPgTimeWithTZ(time+':00'), name, dose: dose || null, note: note || null })
+      const payload = { date, time: toPgTimeWithTZ(time+':00'), name, dose: dose || null, note: note || null }
+      if (isEdit && id) await updateVitamin(id, payload)
+      else await insertVitamin(payload)
       alert(t('actions.saved')); nav('/')
     }catch(e:any){ alert(e.message || String(e)) } finally{ setLoading(false) }
   }
@@ -27,7 +47,7 @@ export default function VitaminForm(){
   return (
     <div className="content">
       <form className="card" onSubmit={onSubmit} style={{maxWidth:520, margin:'16px auto', display:'grid', gap:12}}>
-        <h2>{t('add.vitamin')}</h2>
+        <h2>{isEdit ? t('actions.edit') : t('add.vitamin')}</h2>
         <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
           <label>{t('fields.date')}<input className="input" type="date" value={date} onChange={e=>setDate(e.target.value)} /></label>
           <label>{t('fields.time')}<input className="input" type="time" step="60" value={time} onChange={e=>setTime(e.target.value)} /></label>
