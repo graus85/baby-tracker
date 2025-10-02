@@ -9,18 +9,43 @@ import DailyLog from './pages/DailyLog'
 import More from './pages/More'
 import Login from './pages/Login'
 import Health from './pages/Health'
+
+import AddPicker from './pages/add/AddPicker'
+import FeedForm from './pages/add/FeedForm'
+import WeightForm from './pages/add/WeightForm'
+import HeightForm from './pages/add/HeightForm'
+import DiaperForm from './pages/add/DiaperForm'
+import VitaminForm from './pages/add/VitaminForm'
+import SleepForm from './pages/add/SleepForm'
+import OtherForm from './pages/add/OtherForm'
+
 import ErrorBoundary from './components/ErrorBoundary'
 import './styles.css'
 import './i18n'
 
 const router = createBrowserRouter([
-  { path: '/', element: <App />, children: [
-    { index: true, element: <DailyLog /> },
-    { path: 'summary', element: <Summary /> },
-    { path: 'more', element: <More /> },
-    { path: 'settings', element: <More /> },
-    { path: '*', element: <Navigate to="/" replace /> }
-  ]},
+  {
+    path: '/',
+    element: <App />,
+    children: [
+      { index: true, element: <DailyLog /> },
+      { path: 'summary', element: <Summary /> },
+      { path: 'more', element: <More /> },
+      { path: 'settings', element: <More /> },
+
+      // add flow
+      { path: 'add', element: <AddPicker /> },
+      { path: 'add/feed', element: <FeedForm /> },
+      { path: 'add/weight', element: <WeightForm /> },
+      { path: 'add/height', element: <HeightForm /> },
+      { path: 'add/diaper', element: <DiaperForm /> },
+      { path: 'add/vitamin', element: <VitaminForm /> },
+      { path: 'add/sleep', element: <SleepForm /> },
+      { path: 'add/other', element: <OtherForm /> },
+
+      { path: '*', element: <Navigate to="/" replace /> }
+    ]
+  },
   { path: '/health', element: <Health /> },
   { path: '/login', element: <Login /> }
 ])
@@ -35,9 +60,7 @@ function BootFallback() {
   )
 }
 
-const rootEl = document.getElementById('root')!
-const root = ReactDOM.createRoot(rootEl)
-
+const root = ReactDOM.createRoot(document.getElementById('root')!)
 root.render(
   <StrictMode>
     <QueryClientProvider client={client}>
@@ -50,5 +73,4 @@ root.render(
   </StrictMode>
 )
 
-// segnala al boot HTML che React ha montato
 document.documentElement.setAttribute('data-app-mounted', '1')
