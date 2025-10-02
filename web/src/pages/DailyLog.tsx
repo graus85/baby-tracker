@@ -1,114 +1,79 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useSelectedDate } from '../store/ui'
-import { supabase } from '../lib/supabase'
-import { useEffect, useState } from 'react'
+import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { todayISO } from '../lib/datetime'
+import { useEventsRange, type Kind } from '../lib/events'
+import { IconForKind } from '../components/Icons'
+import { truncate } from '../lib/format'
 
-type Feed = { id:string; time:string; amount?:number; unit?:'ml'|'oz'; method:'breast'|'bottle'; side?:'left'|'right'; durationSec?:number; milkType?:string; note?:string }
-type Diaper = { id:string; time:string; pee:boolean; poop:boolean; note?:string }
-type DayData = { feeds: Feed[]; diapers: Diaper[] }
+type Tab = 'all' | Kind
+
+const KIND_ORDER: Tab[] = ['all','feed','diaper','sleep','vitamin','weight','height','other']
 
 export default function DailyLog(){
-  const { date } = useSelectedDate()
-  const qc = useQueryClient()
-  const [userId, setUserId] = useState<string | null>(null)
+  const { t } = useTranslation()
+  const today = todayISO()
+  const [from, setFrom] = useState(today)
+  const [to, setTo] = useState(today)
+  const [tab, setTab] = useState<Tab>('all')
 
-  useEffect(()=>{ supabase.auth.getUser().then(({data})=>setUserId(data.user?.id ?? null)) }, [])
+  const { data, isLoading, error } = useEventsRange({ from, to })
 
-  const dayQuery = useQuery({
-    queryKey: ['day', date],
-    queryFn: async () => {
-      const { data: user } = await supabase.auth.getUser()
-      const uid = user.user?.id
-      if(!uid) throw new Error('Non autenticato')
-      const { data, error } = await supabase.from('v_day_data')
-  .select('data')
-  .eq('user_id', uid)
-  .eq('date', date)
-  .limit(1);               // ← niente .single()/.maybeSingle()
-
-if (error) throw error;
-const row = (data ?? [])[0] as { data: DayData } | undefined;
-return row?.data ?? { feeds: [], diapers: [] }
-    }
-  })
-
-  const addFeed = useMutation({
-    mutationFn: async (payload: { time:string; amount:number; note?:string }) => {
-      if(!userId) throw new Error('Missing user')
-      const { error } = await supabase.from('feeds').insert({
-        user_id: userId,
-        date, time: payload.time, method: 'bottle',
-        amount: payload.amount, unit:'ml', milk_type:'formula',
-        note: payload.note ?? null
-      })
-      if(error) throw error
-    },
-    onSuccess: ()=> qc.invalidateQueries({ queryKey: ['day', date] })
-  })
-
-  const addDiaper = useMutation({
-    mutationFn: async (payload: { time:string; pee:boolean; poop:boolean; note?:string }) => {
-      if(!userId) throw new Error('Missing user')
-      const { error } = await supabase.from('diapers').insert({
-        user_id: userId, date, time: payload.time, pee: payload.pee, poop: payload.poop, note: payload.note ?? null
-      })
-      if(error) throw error
-    },
-    onSuccess: ()=> qc.invalidateQueries({ queryKey: ['day', date] })
-  })
+  const filtered = useMemo(()=> {
+    const items = data ?? []
+    if (tab === 'all') return items
+    return items.filter(e => e.kind === tab)
+  }, [data, tab])
 
   return (
-    <div className="row">
-      <div className="card" style={{flex:2}}>
-        <h3>Feed</h3>
-        <FeedForm onAdd={(time, amount, note)=>addFeed.mutate({time, amount, note})} />
-        <ul>
-          {dayQuery.data?.feeds?.map(f=>(
-            <li key={f.id}><span className="badge">{f.time}</span> {f.method==='bottle' ? `${f.amount ?? 0} ${f.unit ?? 'ml'}` : `breast ${f.side}`} {f.note ? `— ${f.note}`:''}</li>
-          ))}
-          {!dayQuery.data?.feeds?.length && <li><small>Nessun feed per questo giorno.</small></li>}
-        </ul>
+    <div className="content">
+      {/* Header filter bar */}
+      <div className="card" style={{display:'grid', gap:8, marginBottom:12}}>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
+          <label>{t('filters.from')}<input className="input" type="date" value={from} onChange={e=>setFrom(e.target.value)} /></label>
+          <label>{t('filters.to')}<input className="input" type="date" value={to} onChange={e=>setTo(e.target.value)} /></label>
+        </div>
+
+        <div className="chips">
+          {KIND_ORDER.map(k=>{
+            const active = tab === k
+            return (
+              <button
+                key={k}
+                className={`chip ${active ? 'chip-active' : ''}`}
+                onClick={()=>setTab(k)}
+                aria-pressed={active}
+              >
+                {k==='all' ? t('filters.all') : t(`kinds.${k}`)}
+              </button>
+            )
+          })}
+        </div>
       </div>
-      <div className="card" style={{flex:1}}>
-        <h3>Diapers</h3>
-        <DiaperForm onAdd={(time, pee, poop, note)=>addDiaper.mutate({time, pee, poop, note})} />
-        <ul>
-          {dayQuery.data?.diapers?.map(d=>(
-            <li key={d.id}><span className="badge">{d.time}</span> {d.pee?'pee':''} {d.poop?'poop':''} {d.note ? `— ${d.note}`:''}</li>
-          ))}
-          {!dayQuery.data?.diapers?.length && <li><small>Nessun cambio per questo giorno.</small></li>}
-        </ul>
+
+      {/* List */}
+      {isLoading && <div className="card">{t('state.loading')}</div>}
+      {error && <div className="card" style={{color:'tomato'}}>{String((error as any).message || error)}</div>}
+      {!isLoading && filtered?.length === 0 && (
+        <div className="card">{t('state.empty')}</div>
+      )}
+
+      <div className="vstack">
+        {filtered?.map(ev=>(
+          <article key={`${ev.kind}-${ev.id}`} className="event-card">
+            <div className="event-icon">
+              <IconForKind kind={ev.kind} className="ico-md" />
+            </div>
+            <div className="event-body">
+              <div className="event-title">{t(`kinds.${ev.kind}`)}</div>
+              <div className="event-sub">
+                {truncate(ev.subtitle, 120)}
+              </div>
+              {ev.note && <div className="event-note">“{truncate(ev.note, 140)}”</div>}
+            </div>
+            <div className="event-time">{ev.time}</div>
+          </article>
+        ))}
       </div>
     </div>
-  )
-}
-
-function FeedForm({ onAdd }:{ onAdd: (time:string, amount:number, note?:string)=>void }){
-  const [time, setTime] = useState('08:00')
-  const [amount, setAmount] = useState(120)
-  const [note, setNote] = useState('')
-  return (
-    <form className="row" onSubmit={(e)=>{e.preventDefault(); onAdd(time, amount, note||undefined); setNote('')}}>
-      <input className="input" type="time" value={time} onChange={e=>setTime(e.target.value)} required />
-      <input className="input" type="number" min={0} step={10} value={amount} onChange={e=>setAmount(parseInt(e.target.value||'0'))} required />
-      <input className="input" type="text" placeholder="nota (opzionale)" value={note} onChange={e=>setNote(e.target.value)} />
-      <button type="submit">Aggiungi</button>
-    </form>
-  )
-}
-
-function DiaperForm({ onAdd }:{ onAdd: (time:string, pee:boolean, poop:boolean, note?:string)=>void }){
-  const [time, setTime] = useState('09:30')
-  const [pee, setPee] = useState(true)
-  const [poop, setPoop] = useState(false)
-  const [note, setNote] = useState('')
-  return (
-    <form className="row" onSubmit={(e)=>{e.preventDefault(); onAdd(time, pee, poop, note||undefined); setNote('')}}>
-      <input className="input" type="time" value={time} onChange={e=>setTime(e.target.value)} required />
-      <label><input type="checkbox" checked={pee} onChange={e=>setPee(e.target.checked)} /> Pee</label>
-      <label><input type="checkbox" checked={poop} onChange={e=>setPoop(e.target.checked)} /> Poop</label>
-      <input className="input" type="text" placeholder="nota (opzionale)" value={note} onChange={e=>setNote(e.target.value)} />
-      <button type="submit">Aggiungi</button>
-    </form>
   )
 }
