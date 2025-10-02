@@ -2,7 +2,6 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import { supabase, SUPABASE_READY } from './lib/supabase'
 import { useEffect, useState } from 'react'
 import { ThemeWatcher } from './store/theme'
-import { useSelectedDate } from './store/ui'
 import TabBar from './components/TabBar'
 import Fab from './components/Fab'
 import { useTranslation } from 'react-i18next'
@@ -21,7 +20,6 @@ function ConfigError() {
 export default function App(){
   const nav = useNavigate()
   const [email, setEmail] = useState<string | null>(null)
-  const { date, setDate } = useSelectedDate()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -53,22 +51,12 @@ export default function App(){
       <main className="content">
         <div className="heading">
           <h1>{t('app.title')}</h1>
-          <div style={{display:'flex', gap:8, alignItems:'center'}}>
-            <small>{email}</small>
-          </div>
-        </div>
-
-        <div className="card" style={{marginBottom:12}}>
-          <label style={{display:'flex',gap:8,alignItems:'center'}}>
-            <span>{t('app.day')}:</span>
-            <input className="input" type="date" value={date} onChange={e=>setDate(e.target.value)} />
-          </label>
+          <small>{email}</small>
         </div>
 
         <Outlet />
       </main>
 
-      {/* FAB + footer */}
       <Fab />
       <TabBar />
     </div>
