@@ -53,3 +53,17 @@
     "add": "Add"
   }
 }
+{
+  "filters": { "from": "From", "to": "To", "all": "All" },
+  "kinds": {
+    "feed": "Feed",
+    "diaper": "Diaper",
+    "sleep": "Sleep",
+    "vitamin": "Vitamins",
+    "weight": "Weight",
+    "height": "Height",
+    "other": "Other"
+  },
+  "state": { "loading": "Loading…", "empty": "No events in this range." }
+}
+
