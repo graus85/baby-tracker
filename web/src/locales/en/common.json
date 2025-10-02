@@ -1,6 +1,7 @@
 {
   "app": { "title": "Baby Tracker", "day": "Day" },
   "tabs": { "summary": "Summary", "dailyLog": "Daily Log", "more": "More" },
+
   "more": {
     "app": "APP",
     "account": "ACCOUNT",
@@ -11,7 +12,9 @@
     "dark": "Dark",
     "light": "Light"
   },
+
   "auth": { "logout": "Logout" },
+
   "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" },
 
   "add": {
@@ -24,6 +27,7 @@
     "height": "Height",
     "other": "Other"
   },
+
   "fields": {
     "date": "Date",
     "time": "Time",
@@ -47,14 +51,9 @@
     "sideLeft": "Left breast",
     "sideRight": "Right breast"
   },
-  "actions": {
-    "save": "Save",
-    "saved": "Saved",
-    "add": "Add"
-  }
-}
-{
+
   "filters": { "from": "From", "to": "To", "all": "All" },
+
   "kinds": {
     "feed": "Feed",
     "diaper": "Diaper",
@@ -64,8 +63,16 @@
     "height": "Height",
     "other": "Other"
   },
-  "state": { "loading": "Loading…", "empty": "No events in this range." }
-}
-{
-  "actions": { "edit": "Edit", "duplicate": "Duplicate", "delete": "Delete", "deleteConfirm": "Delete this item?" }
+
+  "state": { "loading": "Loading…", "empty": "No events in this range." },
+
+  "actions": {
+    "save": "Save",
+    "saved": "Saved",
+    "add": "Add",
+    "edit": "Edit",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this item?"
+  }
 }
