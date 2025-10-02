@@ -1,78 +1,78 @@
 {
-  "app": { "title": "Baby Tracker", "day": "Day" },
-  "tabs": { "summary": "Summary", "dailyLog": "Daily Log", "more": "More" },
+  "app": { "title": "Baby Tracker", "day": "Día" },
+  "tabs": { "summary": "Resumen", "dailyLog": "Registro diario", "more": "Más" },
 
   "more": {
     "app": "APP",
-    "account": "ACCOUNT",
-    "appearance": "Appearance",
-    "language": "Language",
-    "current": "Current",
-    "system": "System",
-    "dark": "Dark",
-    "light": "Light"
+    "account": "CUENTA",
+    "appearance": "Apariencia",
+    "language": "Idioma",
+    "current": "Actual",
+    "system": "Sistema",
+    "dark": "Oscuro",
+    "light": "Claro"
   },
 
-  "auth": { "logout": "Logout" },
+  "auth": { "logout": "Cerrar sesión" },
 
   "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" },
 
   "add": {
-    "title": "Record event",
-    "feed": "Feed",
-    "diaper": "Diaper",
-    "sleep": "Sleep",
-    "vitamin": "Vitamins",
-    "weight": "Weight",
-    "height": "Height",
-    "other": "Other"
+    "title": "Registrar evento",
+    "feed": "Comida",
+    "diaper": "Pañal",
+    "sleep": "Sueño",
+    "vitamin": "Vitaminas",
+    "weight": "Peso",
+    "height": "Altura",
+    "other": "Otro"
   },
 
   "fields": {
-    "date": "Date",
-    "time": "Time",
-    "start": "Start",
-    "end": "End",
-    "notes": "Notes",
-    "observations": "Observations",
-    "name": "Type",
-    "dose": "Dose",
-    "kg": "Weight (kg)",
-    "cm": "Height (cm)",
-    "pee": "Pee",
-    "poop": "Poop",
-    "breast": "Breastfeeding",
-    "bottle": "Bottle",
-    "quantityMl": "Quantity (ml)",
-    "durationMin": "Duration (min)",
-    "durationSec": "Duration (sec)",
-    "milkType": "Milk type",
-    "milkTypePlaceholder": "(e.g. formula)",
-    "sideLeft": "Left breast",
-    "sideRight": "Right breast"
+    "date": "Fecha",
+    "time": "Hora",
+    "start": "Inicio",
+    "end": "Fin",
+    "notes": "Notas",
+    "observations": "Observaciones",
+    "name": "Tipo",
+    "dose": "Dosis",
+    "kg": "Peso (kg)",
+    "cm": "Altura (cm)",
+    "pee": "Pipí",
+    "poop": "Popó",
+    "breast": "Pecho",
+    "bottle": "Biberón",
+    "quantityMl": "Cantidad (ml)",
+    "durationMin": "Duración (min)",
+    "durationSec": "Duración (seg)",
+    "milkType": "Tipo de leche",
+    "milkTypePlaceholder": "(p. ej. fórmula)",
+    "sideLeft": "Pecho izquierdo",
+    "sideRight": "Pecho derecho"
   },
 
-  "filters": { "from": "From", "to": "To", "all": "All" },
+  "filters": { "from": "Desde", "to": "Hasta", "all": "Todos" },
 
   "kinds": {
-    "feed": "Feed",
-    "diaper": "Diaper",
-    "sleep": "Sleep",
-    "vitamin": "Vitamins",
-    "weight": "Weight",
-    "height": "Height",
-    "other": "Other"
+    "feed": "Comida",
+    "diaper": "Pañal",
+    "sleep": "Sueño",
+    "vitamin": "Vitaminas",
+    "weight": "Peso",
+    "height": "Altura",
+    "other": "Otro"
   },
 
-  "state": { "loading": "Loading…", "empty": "No events in this range." },
+  "state": { "loading": "Cargando…", "empty": "No hay eventos en este rango." },
 
   "actions": {
-    "save": "Save",
-    "saved": "Saved",
-    "add": "Add",
-    "edit": "Edit",
-    "duplicate": "Duplicate",
-    "delete": "Delete",
-    "deleteConfirm": "Delete this item?"
+    "save": "Guardar",
+    "saved": "Guardado",
+    "add": "Añadir",
+    "edit": "Editar",
+    "duplicate": "Duplicar",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar este elemento?"
   }
 }
