@@ -172,3 +172,40 @@ small{ color: var(--muted); }
 }
 .fab:active{ transform: translateY(1px) scale(.98) }
 
+/* ---- FILTER CHIPS ---- */
+.chips{ display:flex; gap:8px; overflow:auto; padding:2px }
+.chip{
+  background: var(--soft);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.chip-active{
+  background: color-mix(in oklab, var(--acc) 18%, var(--soft));
+}
+
+/* ---- EVENTS LIST ---- */
+.vstack{ display:grid; gap:10px }
+.event-card{
+  display:grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.event-icon{
+  width:44px; height:44px; display:grid; place-items:center;
+  background: var(--soft); border-radius: 12px; color: var(--acc);
+}
+.ico-md{ width:22px; height:22px }
+
+.event-title{ font-weight:600; margin-bottom:2px }
+.event-sub{ font-size:13px; color: var(--muted) }
+.event-note{ font-size:12px; color: var(--muted); margin-top:6px; font-style: italic }
+.event-time{ color: var(--muted); font-size:12px; margin-left:12px }
