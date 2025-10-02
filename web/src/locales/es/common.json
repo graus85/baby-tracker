@@ -53,3 +53,16 @@
     "add": "Añadir"
   }
 }
+{
+  "filters": { "from": "Desde", "to": "Hasta", "all": "Todos" },
+  "kinds": {
+    "feed": "Comida",
+    "diaper": "Pañal",
+    "sleep": "Sueño",
+    "vitamin": "Vitaminas",
+    "weight": "Peso",
+    "height": "Altura",
+    "other": "Otro"
+  },
+  "state": { "loading": "Cargando…", "empty": "No hay eventos en este rango." }
+}
