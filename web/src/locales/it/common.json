@@ -12,5 +12,44 @@
     "light": "Chiaro"
   },
   "auth": { "logout": "Esci" },
-  "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" }
+  "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" },
+
+  "add": {
+    "title": "Registra evento",
+    "feed": "Pasto",
+    "diaper": "Pannolino",
+    "sleep": "Sonno",
+    "vitamin": "Vitamine",
+    "weight": "Peso",
+    "height": "Altezza",
+    "other": "Altro"
+  },
+  "fields": {
+    "date": "Data",
+    "time": "Ora",
+    "start": "Inizio",
+    "end": "Fine",
+    "notes": "Note",
+    "observations": "Osservazioni",
+    "name": "Tipo",
+    "dose": "Dosaggio",
+    "kg": "Peso (kg)",
+    "cm": "Altezza (cm)",
+    "pee": "Pipì",
+    "poop": "Popò",
+    "breast": "Allattamento al seno",
+    "bottle": "Biberon",
+    "quantityMl": "Quantità (ml)",
+    "durationMin": "Durata (min)",
+    "durationSec": "Durata (sec)",
+    "milkType": "Tipo di latte",
+    "milkTypePlaceholder": "(es. formulato)",
+    "sideLeft": "Seno sinistro",
+    "sideRight": "Seno destro"
+  },
+  "actions": {
+    "save": "Salva",
+    "saved": "Salvato",
+    "add": "Aggiungi"
+  }
 }
