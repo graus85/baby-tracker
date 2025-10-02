@@ -12,5 +12,44 @@
     "light": "Light"
   },
   "auth": { "logout": "Logout" },
-  "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" }
+  "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" },
+
+  "add": {
+    "title": "Record event",
+    "feed": "Feed",
+    "diaper": "Diaper",
+    "sleep": "Sleep",
+    "vitamin": "Vitamins",
+    "weight": "Weight",
+    "height": "Height",
+    "other": "Other"
+  },
+  "fields": {
+    "date": "Date",
+    "time": "Time",
+    "start": "Start",
+    "end": "End",
+    "notes": "Notes",
+    "observations": "Observations",
+    "name": "Type",
+    "dose": "Dose",
+    "kg": "Weight (kg)",
+    "cm": "Height (cm)",
+    "pee": "Pee",
+    "poop": "Poop",
+    "breast": "Breastfeeding",
+    "bottle": "Bottle",
+    "quantityMl": "Quantity (ml)",
+    "durationMin": "Duration (min)",
+    "durationSec": "Duration (sec)",
+    "milkType": "Milk type",
+    "milkTypePlaceholder": "(e.g. formula)",
+    "sideLeft": "Left breast",
+    "sideRight": "Right breast"
+  },
+  "actions": {
+    "save": "Save",
+    "saved": "Saved",
+    "add": "Add"
+  }
 }
