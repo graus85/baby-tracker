@@ -1,6 +1,7 @@
 {
   "app": { "title": "Baby Tracker", "day": "Jour" },
   "tabs": { "summary": "Résumé", "dailyLog": "Journal", "more": "Plus" },
+
   "more": {
     "app": "APP",
     "account": "COMPTE",
@@ -11,7 +12,9 @@
     "dark": "Sombre",
     "light": "Clair"
   },
+
   "auth": { "logout": "Déconnexion" },
+
   "lang": { "en": "English", "it": "Italiano", "fr": "Français", "es": "Español" },
 
   "add": {
@@ -24,6 +27,7 @@
     "height": "Taille",
     "other": "Autre"
   },
+
   "fields": {
     "date": "Date",
     "time": "Heure",
@@ -47,14 +51,9 @@
     "sideLeft": "Sein gauche",
     "sideRight": "Sein droit"
   },
-  "actions": {
-    "save": "Enregistrer",
-    "saved": "Enregistré",
-    "add": "Ajouter"
-  }
-}
-{
+
   "filters": { "from": "Du", "to": "Au", "all": "Tous" },
+
   "kinds": {
     "feed": "Repas",
     "diaper": "Couches",
@@ -64,5 +63,16 @@
     "height": "Taille",
     "other": "Autre"
   },
-  "state": { "loading": "Chargement…", "empty": "Aucun événement dans cette période." }
+
+  "state": { "loading": "Chargement…", "empty": "Aucun événement dans cette période." },
+
+  "actions": {
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "duplicate": "Dupliquer",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer cet élément ?"
+  }
 }
