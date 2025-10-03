@@ -64,6 +64,11 @@
     "other": "Autre"
   },
 
+  "summary": {
+    "total": "Événements totaux : {{count}}",
+    "range": "Du {{from}} au {{to}}"
+  },
+
   "state": { "loading": "Chargement…", "empty": "Aucun événement dans cette période." },
 
   "actions": {
