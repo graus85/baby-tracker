@@ -1,26 +1,43 @@
-import { useQuery } from '@tanstack/react-query'
-import { supabase } from '../lib/supabase'
+import { useMemo, useState } from 'react'
+import { todayISO } from '../lib/datetime'
+import { useEventsRange } from '../lib/events'
+import EventTimeline from '../components/EventTimeline'
+import { useTranslation } from 'react-i18next'
 
 export default function Summary(){
-  const q = useQuery({
-    queryKey: ['counts'],
-    queryFn: async () => {
-      const { data: user } = await supabase.auth.getUser()
-      const uid = user.user?.id
-      if(!uid) throw new Error('Non autenticato')
-      const { data, error } = await supabase
-        .from('feeds')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', uid)
-      if(error) throw error
-      return { feeds: data?.length ?? 0 }
-    }
-  })
+  const { t } = useTranslation()
+  const today = todayISO()
+  const [from, setFrom] = useState(today)
+  const [to, setTo] = useState(today)
+
+  const { data, isLoading, error } = useEventsRange({ from, to })
+
+  const total = useMemo(()=> data?.length ?? 0, [data])
+
   return (
-    <div className="card">
-      <h3>Riepilogo</h3>
-      <p><strong>Totale feed (record):</strong> {q.data?.feeds ?? 0}</p>
-      <small>Demo minimal: aggregazioni avanzate verranno aggiunte in seguito.</small>
+    <div className="content">
+      {/* Filter bar + total */}
+      <div className="card" style={{display:'grid', gap:8, marginBottom:12}}>
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
+          <label>{t('filters.from')}<input className="input" type="date" value={from} onChange={e=>setFrom(e.target.value)} /></label>
+          <label>{t('filters.to')}<input className="input" type="date" value={to} onChange={e=>setTo(e.target.value)} /></label>
+        </div>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+          <div className="muted">{t('summary.range', { from, to })}</div>
+          <div className="badge">{t('summary.total', { count: total })}</div>
+        </div>
+      </div>
+
+      {isLoading && <div className="card">{t('state.loading')}</div>}
+      {error && <div className="card" style={{color:'tomato'}}>{String((error as any).message || error)}</div>}
+
+      {!isLoading && (data?.length ?? 0) === 0 && (
+        <div className="card">{t('state.empty')}</div>
+      )}
+
+      {!!data && data.length > 0 && (
+        <EventTimeline events={data} from={from} to={to} />
+      )}
     </div>
   )
 }
