@@ -28,10 +28,9 @@ const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
-      { index: true, element: <DailyLog /> },
-      { path: 'summary', element: <Summary /> },
+      { index: true, element: <Summary /> }, // <- Summary di default
+      { path: 'daily', element: <DailyLog /> },
       { path: 'more', element: <More /> },
-      { path: 'settings', element: <More /> },
 
       // add flow
       { path: 'add', element: <AddPicker /> },
