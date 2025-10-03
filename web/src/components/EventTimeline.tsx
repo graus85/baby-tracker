@@ -10,7 +10,14 @@ function fmtDay(d: Date) {
   const mm = String(d.getMonth() + 1).padStart(2, '0')
   return `${dd}/${mm}`
 }
+function dayKeyLocal(d: Date) { // YYYY-MM-DD in locale, NO UTC
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${dd}`
+}
 function hoursFrac(hhmm: string) {
+  // accetta "HH:MM" o "HH:MM:SS+TZ"
   const m = hhmm?.match?.(/^(\d{2}):(\d{2})/)
   if (!m) return 0
   return parseInt(m[1], 10) + parseInt(m[2], 10) / 60
@@ -24,7 +31,7 @@ type Props = {
 
 /**
  * Responsive SVG timeline: X=days, Y=hours (0..24).
- * Marker size e posizioni sono clamped per non essere tagliati ai bordi.
+ * Usa confronto date in locale (niente UTC) e icone con clamp.
  */
 export default function EventTimeline({ events, from, to }: Props) {
   const DAYS = useMemo(() => {
@@ -39,7 +46,7 @@ export default function EventTimeline({ events, from, to }: Props) {
   const W = 900
   const H = 420
   const ML = 44
-  const MR = 28 // più spazio a destra per non tagliare i marker
+  const MR = 36 // spazio extra per non tagliare a destra
   const MT = 16
   const MB = 26
   const IW = W - ML - MR
@@ -50,9 +57,9 @@ export default function EventTimeline({ events, from, to }: Props) {
   const yForHour = (h: number) => MT + IH - (h / 24) * IH
   const xForDayIdx = (i: number) => ML + i * colW + colW / 2
 
-  // marker size adattivo (min 14 / max 20) proporzionale alla colonna
-  const iconSize = Math.max(14, Math.min(20, colW * 0.35))
-  const circleR = Math.round(iconSize / 2) + 3
+  // marker size adattivo (più piccolo): min 10, max 16
+  const iconSize = Math.max(10, Math.min(16, colW * 0.28))
+  const circleR = Math.round(iconSize / 2) + 2
   const clampX = (x: number) =>
     Math.max(ML + circleR + 2, Math.min(W - MR - circleR - 2, x))
 
@@ -88,7 +95,7 @@ export default function EventTimeline({ events, from, to }: Props) {
 
         {/* events */}
         {events.map((ev, idx) => {
-          const dayIdx = DAYS.findIndex(d => d.toISOString().slice(0, 10) === ev.date)
+          const dayIdx = DAYS.findIndex(d => dayKeyLocal(d) === ev.date) // <-- FIX: confronto locale
           if (dayIdx < 0) return null
           const xRaw = xForDayIdx(dayIdx)
           const x = clampX(xRaw)
@@ -100,8 +107,8 @@ export default function EventTimeline({ events, from, to }: Props) {
             <g key={`${ev.kind}-${ev.id}-${idx}`} pointerEvents="none">
               {hasSpan && yEnd !== null && (
                 <line
-                  x1={x - circleR + 2}
-                  x2={x + circleR - 2}
+                  x1={x - circleR + 1}
+                  x2={x + circleR - 1}
                   y1={y}
                   y2={yEnd}
                   stroke="var(--acc)"
