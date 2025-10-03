@@ -229,10 +229,13 @@ small{ color: var(--muted); }
   color:#fff;
 }
 
-/* timeline sizing */
+/* timeline sizing + mobile */
 .timeline-svg{ width:100%; height:360px }
+@media (max-width: 480px){
+  .timeline-svg{ height:300px }
+}
 
-/* badge per totale */
+/* badge e testo */
 .badge{
   background: var(--card);
   border:1px solid var(--border);
@@ -242,5 +245,6 @@ small{ color: var(--muted); }
   color: var(--fg);
 }
 .muted{ color: var(--muted); font-size: 12px }
+
 
 
