@@ -76,3 +76,9 @@
     "deleteConfirm": "Delete this item?"
   }
 }
+{
+  "summary": {
+    "total": "Total events: {{count}}",
+    "range": "From {{from}} to {{to}}"
+  }
+}
