@@ -1,59 +1,71 @@
-import type { Kind } from '../lib/events'
+import React from 'react'
 
-export function IconFeed(props: any){ return (
-  <svg viewBox="0 0 24 24" {...props}>
-    <path d="M8 6h8M10 3h4M9 8h6l1 3v7a3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3V11l1-3Z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-)}
+export type Kind = 'feed' | 'diaper' | 'sleep' | 'vitamin' | 'weight' | 'height' | 'other'
 
-export function IconDiaper(props: any){ return (
-  <svg viewBox="0 0 24 24" {...props}>
-    <path d="M3 8h18v5a4 4 0 0 1-4 4h-2l-2-3-2 3H7a4 4 0 0 1-4-4V8Z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
-  </svg>
-)}
+type Props = {
+  kind: Kind
+  className?: string
+  width?: number
+  height?: number
+}
 
-export function IconSleep(props: any){ return (
-  <svg viewBox="0 0 24 24" {...props}>
-    <path d="M14 3a8 8 0 1 0 7 11 7 7 0 0 1-7-11Z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
-  </svg>
-)}
+/** Icone minimal inline, rispettano width/height */
+export function IconForKind({ kind, className, width = 16, height = 16 }: Props) {
+  const common = { width, height, viewBox: '0 0 24 24', className, fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' as const }
 
-export function IconVitamin(props: any){ return (
-  <svg viewBox="0 0 24 24" {...props}>
-    <path d="M7 12l5-5a3.5 3.5 0 0 1 5 5l-5 5a3.5 3.5 0 0 1-5-5Z" fill="none" stroke="currentColor" strokeWidth="1.8"/>
-    <path d="M9.5 9.5l5 5" stroke="currentColor" strokeWidth="1.8"/>
-  </svg>
-)}
-
-export function IconWeight(props: any){ return (
-  <svg viewBox="0 0 24 24" {...props}>
-    <path d="M6 7h12l2 13H4L6 7Z" fill="none" stroke="currentColor" strokeWidth="1.8"/>
-    <path d="M12 7V4m-3 0h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-  </svg>
-)}
-
-export function IconHeight(props: any){ return (
-  <svg viewBox="0 0 24 24" {...props}>
-    <path d="M7 3v18M17 3v18M7 6h4M17 8h-4M7 12h4M17 14h-4M7 18h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-  </svg>
-)}
-
-export function IconOther(props: any){ return (
-  <svg viewBox="0 0 24 24" {...props}>
-    <path d="M5 4h10l4 4v12H5V4Z" fill="none" stroke="currentColor" strokeWidth="1.8"/>
-    <path d="M15 4v4h4" stroke="currentColor" strokeWidth="1.8"/>
-  </svg>
-)}
-
-export function IconForKind({kind, className}:{kind:Kind,className?:string}){
-  const p = { className }
-  switch(kind){
-    case 'feed': return <IconFeed {...p}/>
-    case 'diaper': return <IconDiaper {...p}/>
-    case 'sleep': return <IconSleep {...p}/>
-    case 'vitamin': return <IconVitamin {...p}/>
-    case 'weight': return <IconWeight {...p}/>
-    case 'height': return <IconHeight {...p}/>
-    default: return <IconOther {...p}/>
+  switch (kind) {
+    case 'feed':
+      return (
+        <svg {...common}>
+          <path d="M7 10v7a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3v-7" />
+          <rect x="8" y="5" width="8" height="5" rx="2" />
+          <path d="M10 5V3m4 2V3" />
+        </svg>
+      )
+    case 'diaper':
+      return (
+        <svg {...common}>
+          <rect x="3" y="5" width="18" height="8" rx="2" />
+          <path d="M6 13v2a4 4 0 0 0 4 4h0" />
+          <path d="M18 13v2a4 4 0 0 1-4 4h0" />
+        </svg>
+      )
+    case 'sleep':
+      return (
+        <svg {...common}>
+          <path d="M6 14a6 6 0 1 0 8-8 6 6 0 0 1-8 8z" />
+          <path d="M14 3h5l-5 5h5" />
+        </svg>
+      )
+    case 'vitamin':
+      return (
+        <svg {...common}>
+          <rect x="5" y="3" width="6" height="18" rx="3" />
+          <rect x="13" y="7" width="6" height="10" rx="3" />
+        </svg>
+      )
+    case 'weight':
+      return (
+        <svg {...common}>
+          <path d="M6 9h12l2 11H4l2-11Z" />
+          <path d="M9 9a3 3 0 1 1 6 0" />
+        </svg>
+      )
+    case 'height':
+      return (
+        <svg {...common}>
+          <path d="M6 4v16M6 8h3M6 12h3M6 16h3" />
+          <path d="M12 20l6-16" />
+        </svg>
+      )
+    default:
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 3" />
+        </svg>
+      )
   }
 }
+
+export default IconForKind
