@@ -10,7 +10,17 @@
     "current": "Actuel",
     "system": "Système",
     "dark": "Sombre",
-    "light": "Clair"
+    "light": "Clair",
+    "export": {
+      "title": "Export des données (CSV)",
+      "subtitle": "Téléchargez vos données suivies au format CSV.",
+      "all": "Exporter toutes les tables (fichiers CSV)",
+      "one": "Exporter la table sélectionnée",
+      "select": "Choisir une table",
+      "progress": "Préparation…",
+      "done": "Export terminé",
+      "error": "Échec de l'export"
+    }
   },
 
   "auth": { "logout": "Déconnexion" },
