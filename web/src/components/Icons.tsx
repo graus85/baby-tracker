@@ -26,8 +26,8 @@ export function IconForKind({ kind, className, width = 16, height = 16 }: Props)
       return (
         <svg {...common}>
           <rect x="3" y="5" width="18" height="8" rx="2" />
-          <path d="M6 13v2a4 4 0 0 0 4 4h0" />
-          <path d="M18 13v2a4 4 0 0 1-4 4h0" />
+          <path d="M6 13v2a4 4 0 0 0 4 4" />
+          <path d="M18 13v2a4 4 0 0 1-4 4" />
         </svg>
       )
     case 'sleep':
