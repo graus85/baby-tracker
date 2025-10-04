@@ -278,7 +278,7 @@ html, body { overflow-x: hidden; }
   .grid-2{ grid-template-columns: 1fr 1fr; }
 }
 
-/* chips riga (wrappa) */
+/* chips riga (wrappa) 
 .chips{ display:flex; flex-wrap: wrap; gap:8px; align-items:center }
 .chip{
   display:inline-flex; align-items:center; gap:6px;
@@ -286,7 +286,7 @@ html, body { overflow-x: hidden; }
   background:var(--card); color:var(--fg); font-size:13px;
 }
 .chip-active{ background: var(--soft); }
-.ico-chip{ width:14px; height:14px }
+.ico-chip{ width:14px; height:14px } */
 
 /* lista verticale con spaziatura */
 .stack{ display:flex; flex-direction:column; gap:12px; }
