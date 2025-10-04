@@ -17,7 +17,6 @@ export default function DailyLog() {
   const [to, setTo] = useState(today)
   const [selected, setSelected] = useState<Set<Kind>>(new Set(ALL_KINDS))
   const [refreshKey, setRefreshKey] = useState(0)
-
   const { data, isLoading, error } = useEventsRange({ from, to, refreshKey })
 
   const filtered: EventItem[] = useMemo(() => {
@@ -34,7 +33,7 @@ export default function DailyLog() {
     })
   }
   function selectAll() { setSelected(new Set(ALL_KINDS)) }
-  function bump(){ setRefreshKey(k => k+1) }
+  function bump(){ setRefreshKey(k => k + 1) }
 
   // --- Edit modal
   const [editing, setEditing] = useState<EventItem | null>(null)
@@ -53,7 +52,7 @@ export default function DailyLog() {
     alert(t('actions.saved'))
   }
 
-  // --- Add sheet (FAB solo qui)
+  // --- Add sheet (aperto dal FAB)
   const [adding, setAdding] = useState(false)
 
   return (
@@ -102,10 +101,10 @@ export default function DailyLog() {
         ))}
       </div>
 
-      {/* FAB visibile solo qui */}
+      {/* FAB – visibile solo su /daily o /daily-log (gestito in Fab.tsx) */}
       <Fab onClick={()=>setAdding(true)} />
 
-      {/* Modale di modifica */}
+      {/* Modale modifica */}
       <EditEventModal
         open={!!editing}
         event={editing}
@@ -113,14 +112,13 @@ export default function DailyLog() {
         onSave={handleSave}
       />
 
-      {/* Sheet aggiunta evento */}
+      {/* Bottom-sheet scelta/aggiunta evento */}
       <AddEventSheet
         open={adding}
         onClose={()=>setAdding(false)}
-        onAdded={()=>{ setAdding(false); bump(); }}
+        onAdded={()=>{ setAdding(false); bump() }}
         defaultDate={today}
       />
     </div>
   )
 }
-
