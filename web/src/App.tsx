@@ -57,7 +57,7 @@ export default function App(){
         <Outlet />
       </main>
 
-      <Fab />
+     /* <Fab /> */
       <TabBar />
     </div>
   )
