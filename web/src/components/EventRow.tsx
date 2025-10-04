@@ -12,24 +12,23 @@ type Props = {
 
 function timeRight(ev: EventItem){
   if (ev.kind === 'sleep' && ev.start) {
-    const s = (ev.start as any)?.slice?.(0,5) || ev.time?.slice?.(0,5)
-    const e = (ev.endTime as any)?.slice?.(0,5)
-    return e ? `${s}–${e}` : (s || '')
+    const s = ev.start.slice(0,5)
+    const e = ev.endTime?.slice(0,5)
+    return e ? `${s}–${e}` : s
   }
-  return ev.time?.slice?.(0,5) || ''
+  return ev.time?.slice(0,5) || ''
 }
 
 function subtitle(ev: EventItem, t: (k:string,v?:any)=>string){
   switch(ev.kind){
-    case 'feed': {
-      if (ev.method === 'bottle') {
+    case 'feed':
+      if (ev.method === 'bottle'){
         const qty = ev.amount ? `${ev.amount}${ev.unit || 'ml'}` : ''
         const type = ev.milk_type ? ` ${ev.milk_type}` : ''
         return [qty && `${qty} bottle`, type].filter(Boolean).join('')
       }
       if (ev.side) return t('fields.breast') + ' ' + (ev.side === 'left' ? t('fields.sideLeft') : t('fields.sideRight'))
       return t('fields.breast')
-    }
     case 'diaper': {
       const a:string[] = []
       if (ev.pee) a.push('pee')
