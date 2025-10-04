@@ -6,7 +6,7 @@ import { IconForKind, type Kind } from '../components/Icons'
 import EventRow from '../components/EventRow'
 import Fab from '../components/Fab'
 import EditEventModal from '../components/EditEventModal'
-import { useNavigate } from 'react-router-dom'
+import AddEventSheet from '../components/AddEventSheet'
 
 const ALL_KINDS: Kind[] = ['feed','diaper','sleep','vitamin','weight','height','other']
 
@@ -36,9 +36,8 @@ export default function DailyLog() {
   function selectAll() { setSelected(new Set(ALL_KINDS)) }
   function bump(){ setRefreshKey(k => k+1) }
 
-  // --- Edit modal state
+  // --- Edit modal
   const [editing, setEditing] = useState<EventItem | null>(null)
-
   async function handleDelete(ev: EventItem){
     if (!confirm(t('actions.deleteConfirm'))) return
     await deleteEvent(ev); bump()
@@ -54,12 +53,8 @@ export default function DailyLog() {
     alert(t('actions.saved'))
   }
 
-  // FAB only on DailyLog
-  const navigate = useNavigate()
-  function openAdd(){
-    // se hai una pagina /add, navighiamo lì; altrimenti sostituisci con la tua sheet/modal
-    navigate('/add', { replace: false })
-  }
+  // --- Add sheet (FAB solo qui)
+  const [adding, setAdding] = useState(false)
 
   return (
     <div className="content content--safe">
@@ -107,8 +102,8 @@ export default function DailyLog() {
         ))}
       </div>
 
-      {/* FAB solo qui */}
-      <Fab onClick={openAdd} />
+      {/* FAB visibile solo qui */}
+      <Fab onClick={()=>setAdding(true)} />
 
       {/* Modale di modifica */}
       <EditEventModal
@@ -117,6 +112,15 @@ export default function DailyLog() {
         onClose={()=>setEditing(null)}
         onSave={handleSave}
       />
+
+      {/* Sheet aggiunta evento */}
+      <AddEventSheet
+        open={adding}
+        onClose={()=>setAdding(false)}
+        onAdded={()=>{ setAdding(false); bump(); }}
+        defaultDate={today}
+      />
     </div>
   )
 }
+
