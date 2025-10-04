@@ -247,4 +247,89 @@ small{ color: var(--muted); }
 .muted{ color: var(--muted); font-size: 12px }
 
 
+/* --- iOS safe area + layout mobile --------------------------------------- */
+.content.content--safe{
+  padding-left: calc(16px + env(safe-area-inset-left));
+  padding-right: calc(16px + env(safe-area-inset-right));
+  padding-top: 12px;
+  padding-bottom: calc(110px + env(safe-area-inset-bottom)); /* spazio per footer + FAB */
+  box-sizing: border-box;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+html, body { overflow-x: hidden; }
+
+/* card */
+.card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;     /* impedisce “tagli” bordo su iOS */
+}
+.card--pad{ padding: 12px; }
+
+/* grid 2 colonne responsiva */
+.grid-2{
+  display:grid; gap:8px;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 420px){
+  .grid-2{ grid-template-columns: 1fr 1fr; }
+}
+
+/* chips riga (wrappa) */
+.chips{ display:flex; flex-wrap: wrap; gap:8px; align-items:center }
+.chip{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 12px; border-radius:999px; border:1px solid var(--border);
+  background:var(--card); color:var(--fg); font-size:13px;
+}
+.chip-active{ background: var(--soft); }
+.ico-chip{ width:14px; height:14px }
+
+/* lista verticale con spaziatura */
+.stack{ display:flex; flex-direction:column; gap:12px; }
+
+/* --- riga evento ---------------------------------------------------------- */
+.event-card{
+  display:grid; grid-template-columns: 48px 1fr; gap:12px;
+  padding: 12px; align-items:flex-start;
+}
+.event-ico{
+  width:48px; height:48px; border-radius:12px;
+  background: var(--soft);
+  display:grid; place-items:center;
+}
+.event-main{ min-width: 0; }
+.event-head{
+  display:grid; grid-template-columns: 1fr auto; align-items:center; gap:8px;
+}
+.event-title{ font-weight: 700; font-size: 18px; }
+.event-time{ color: var(--muted); font-variant-numeric: tabular-nums; }
+.event-sub{ color: var(--muted); margin-top: 2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+.event-actions{
+  display:grid; gap:8px; margin-top: 12px;
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 380px){
+  .event-actions{ grid-template-columns: 1fr 1fr; }
+}
+
+/* bottoni base (se non già presenti) */
+button{
+  background: var(--soft); color: var(--fg);
+  border: 1px solid var(--border); padding: 10px 12px;
+  border-radius: 12px; font-size: 15px;
+}
+button:active{ transform: translateY(1px); }
+.btn-danger{ background:#b91c1c; color:#fff; border-color:#b91c1c; }
+
+/* input */
+.input{ width:100%; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--fg); padding:10px 12px; }
+label{ display:grid; gap:6px; font-weight:600 }
+
+
+
 
