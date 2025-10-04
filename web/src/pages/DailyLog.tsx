@@ -6,7 +6,7 @@ import { IconForKind, type Kind } from '../components/Icons'
 import EventRow from '../components/EventRow'
 import Fab from '../components/Fab'
 import EditEventModal from '../components/EditEventModal'
-import AddEventSheet from '../components/AddEventSheet'
+import { useNavigate } from 'react-router-dom'
 
 const ALL_KINDS: Kind[] = ['feed','diaper','sleep','vitamin','weight','height','other']
 
@@ -53,8 +53,9 @@ export default function DailyLog() {
     alert(t('actions.saved'))
   }
 
-  // --- Add sheet (aperto dal FAB)
-  const [adding, setAdding] = useState(false)
+  // --- FAB: apri AddPicker
+  const navigate = useNavigate()
+  const openAdd = () => navigate('/add')
 
   return (
     <div className="content content--safe">
@@ -102,8 +103,8 @@ export default function DailyLog() {
         ))}
       </div>
 
-      {/* FAB – qui è montato, quindi si vede solo nel Daily Log */}
-      <Fab onClick={()=>setAdding(true)} />
+      {/* FAB – solo qui (non montarlo su altre pagine) */}
+      <Fab onClick={openAdd} />
 
       {/* Modale modifica */}
       <EditEventModal
@@ -112,14 +113,7 @@ export default function DailyLog() {
         onClose={()=>setEditing(null)}
         onSave={handleSave}
       />
-
-      {/* Bottom-sheet scelta/aggiunta evento */}
-      <AddEventSheet
-        open={adding}
-        onClose={()=>setAdding(false)}
-        onAdded={()=>{ setAdding(false); bump() }}
-        defaultDate={today}
-      />
     </div>
   )
 }
+
