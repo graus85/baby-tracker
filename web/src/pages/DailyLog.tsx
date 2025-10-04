@@ -17,6 +17,7 @@ export default function DailyLog() {
   const [to, setTo] = useState(today)
   const [selected, setSelected] = useState<Set<Kind>>(new Set(ALL_KINDS))
   const [refreshKey, setRefreshKey] = useState(0)
+
   const { data, isLoading, error } = useEventsRange({ from, to, refreshKey })
 
   const filtered: EventItem[] = useMemo(() => {
@@ -101,7 +102,7 @@ export default function DailyLog() {
         ))}
       </div>
 
-      {/* FAB – visibile solo su /daily o /daily-log (gestito in Fab.tsx) */}
+      {/* FAB – qui è montato, quindi si vede solo nel Daily Log */}
       <Fab onClick={()=>setAdding(true)} />
 
       {/* Modale modifica */}
@@ -122,4 +123,3 @@ export default function DailyLog() {
     </div>
   )
 }
-
