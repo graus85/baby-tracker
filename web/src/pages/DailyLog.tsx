@@ -1,21 +1,24 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { todayISO } from '../lib/datetime'
-import { useEventsRange, type EventItem } from '../lib/events'
+import { useEventsRange, type EventItem, deleteEvent, duplicateEvent, updateEvent } from '../lib/events'
 import { IconForKind, type Kind } from '../components/Icons'
 import EventRow from '../components/EventRow'
+import Fab from '../components/Fab'
+import EditEventModal from '../components/EditEventModal'
+import { useNavigate } from 'react-router-dom'
 
 const ALL_KINDS: Kind[] = ['feed','diaper','sleep','vitamin','weight','height','other']
 
 export default function DailyLog() {
   const { t } = useTranslation()
   const today = todayISO()
-
   const [from, setFrom] = useState(today)
   const [to, setTo] = useState(today)
   const [selected, setSelected] = useState<Set<Kind>>(new Set(ALL_KINDS))
+  const [refreshKey, setRefreshKey] = useState(0)
 
-  const { data, isLoading, error } = useEventsRange({ from, to })
+  const { data, isLoading, error } = useEventsRange({ from, to, refreshKey })
 
   const filtered: EventItem[] = useMemo(() => {
     const src = data ?? []
@@ -26,16 +29,37 @@ export default function DailyLog() {
     setSelected(prev => {
       const n = new Set(prev)
       if (n.has(k)) n.delete(k); else n.add(k)
-      if (n.size === 0) ALL_KINDS.forEach(x => n.add(x)) // mai 0
+      if (n.size === 0) ALL_KINDS.forEach(x => n.add(x))
       return n
     })
   }
   function selectAll() { setSelected(new Set(ALL_KINDS)) }
+  function bump(){ setRefreshKey(k => k+1) }
 
-  // azioni (stub pronte a collegarsi ai form)
-  function onEdit(_ev: EventItem){ /* open edit modal */ }
-  function onDuplicate(_ev: EventItem){ /* duplicate logic */ }
-  function onDelete(_ev: EventItem){ /* delete logic */ }
+  // --- Edit modal state
+  const [editing, setEditing] = useState<EventItem | null>(null)
+
+  async function handleDelete(ev: EventItem){
+    if (!confirm(t('actions.deleteConfirm'))) return
+    await deleteEvent(ev); bump()
+    alert(t('actions.deleted') || 'Deleted')
+  }
+  async function handleDuplicate(ev: EventItem){
+    await duplicateEvent(ev); bump()
+    alert(t('actions.duplicated') || 'Duplicated')
+  }
+  async function handleSave(values: { date: string, time?: string, start?: string, endTime?: string, note?: string }){
+    if (!editing) return
+    await updateEvent(editing, values); bump()
+    alert(t('actions.saved'))
+  }
+
+  // FAB only on DailyLog
+  const navigate = useNavigate()
+  function openAdd(){
+    // se hai una pagina /add, navighiamo lì; altrimenti sostituisci con la tua sheet/modal
+    navigate('/add', { replace: false })
+  }
 
   return (
     <div className="content content--safe">
@@ -76,12 +100,23 @@ export default function DailyLog() {
           <EventRow
             key={ev.id}
             event={ev}
-            onEdit={()=>onEdit(ev)}
-            onDuplicate={()=>onDuplicate(ev)}
-            onDelete={()=>onDelete(ev)}
+            onEdit={()=>setEditing(ev)}
+            onDuplicate={()=>handleDuplicate(ev)}
+            onDelete={()=>handleDelete(ev)}
           />
         ))}
       </div>
+
+      {/* FAB solo qui */}
+      <Fab onClick={openAdd} />
+
+      {/* Modale di modifica */}
+      <EditEventModal
+        open={!!editing}
+        event={editing}
+        onClose={()=>setEditing(null)}
+        onSave={handleSave}
+      />
     </div>
   )
 }
