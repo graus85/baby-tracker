@@ -10,7 +10,17 @@
     "current": "Current",
     "system": "System",
     "dark": "Dark",
-    "light": "Light"
+    "light": "Light",
+    "export": {
+      "title": "Data export (CSV)",
+      "subtitle": "Download your tracked data as CSV files.",
+      "all": "Export all tables (CSV files)",
+      "one": "Export selected table",
+      "select": "Select a table",
+      "progress": "Preparing…",
+      "done": "Export completed",
+      "error": "Export failed"
+    }
   },
 
   "auth": { "logout": "Logout" },
