@@ -13,9 +13,9 @@
     "light": "Claro",
     "export": {
       "title": "Exportación de datos (CSV)",
-      "subtitle": "Descarga tus datos registrados como archivos CSV.",
-      "all": "Exportar todas las tablas (archivos CSV)",
-      "one": "Exportar tabla seleccionada",
+      "subtitle": "Descarga tus datos registrados.",
+      "allZip": "Exportar todo (ZIP)",
+      "one": "Exportar tabla seleccionada (CSV)",
       "select": "Seleccionar una tabla",
       "progress": "Preparando…",
       "done": "Exportación completada",
