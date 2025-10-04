@@ -52,12 +52,11 @@ export default function AddEventSheet({ open, onClose, onAdded, defaultDate }: P
   const [cm, setCm] = useState<number | ''>('')
 
   React.useEffect(()=>{
-    if (!open){ // reset ad ogni chiusura
+    if (!open){
       setStep('pick'); setKind(null)
       setDate(defaultDate); setTime(nowHHMM()); setNote('')
       setMethod('breast'); setSide('left'); setAmount(''); setUnit('ml'); setMilkType('')
-      setPee(true); setPoop(false)
-      setStart(nowHHMM()); setEndTime(nowHHMM())
+      setPee(true); setPoop(false); setStart(nowHHMM()); setEndTime(nowHHMM())
       setName(''); setDose(''); setKg(''); setCm('')
     }
   }, [open, defaultDate])
@@ -69,7 +68,6 @@ export default function AddEventSheet({ open, onClose, onAdded, defaultDate }: P
     const user_id = userRes?.user?.id
     if (!user_id || !kind) { alert('Not authenticated'); return }
 
-    // helper time to hh:mm:ss
     const t = (x?: string) => x ? `${x}:00` : null
 
     let table = ''
@@ -88,39 +86,33 @@ export default function AddEventSheet({ open, onClose, onAdded, defaultDate }: P
           payload.side = side
         }
         break
-
       case 'diaper':
         table = 'diapers'
         payload.time = t(time)
         payload.pee = !!pee
         payload.poop = !!poop
         break
-
       case 'sleep':
         table = 'sleeps'
         payload.start_time = t(start)
         payload.end_time = t(endTime)
         break
-
       case 'vitamin':
         table = 'vitamins'
         payload.time = t(time)
         payload.name = name || null
         payload.dose = dose || null
         break
-
       case 'weight':
         table = 'weights'
         payload.time = t(time)
         payload.kg = kg === '' ? null : Number(kg)
         break
-
       case 'height':
         table = 'heights'
         payload.time = t(time)
         payload.cm = cm === '' ? null : Number(cm)
         break
-
       case 'other':
         table = 'others'
         payload.time = t(time)
@@ -128,10 +120,7 @@ export default function AddEventSheet({ open, onClose, onAdded, defaultDate }: P
     }
 
     const { error } = await supabase.from(table).insert(payload)
-    if (error) {
-      alert(error.message)
-      return
-    }
+    if (error) { alert(error.message); return }
     onAdded()
   }
 
@@ -175,7 +164,6 @@ export default function AddEventSheet({ open, onClose, onAdded, defaultDate }: P
               )}
             </div>
 
-            {/* campi specifici */}
             {kind === 'feed' && (
               <>
                 <label>{t('fields.breast') + ' / ' + t('fields.bottle')}
