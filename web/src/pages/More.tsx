@@ -1,112 +1,188 @@
-import { useCallback } from 'react'
-import { supabase } from '../lib/supabase'
-import { useTheme } from '../store/theme'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import i18n from '../i18n'
+import { supabase } from '../lib/supabase'
 
-type Mode = 'system' | 'dark' | 'light'
-const THEME_OPTIONS: { value: Mode; labelKey: string }[] = [
-  { value: 'system', labelKey: 'more.system' },
-  { value: 'dark',   labelKey: 'more.dark' },
-  { value: 'light',  labelKey: 'more.light' },
-]
+type ThemeMode = 'system' | 'dark' | 'light'
+const THEME_KEY = 'bt_theme'
+const LANG_KEY  = 'bt_lang'
 
-const LANG_OPTIONS = [
-  { value: 'en', labelKey: 'lang.en' },
-  { value: 'it', labelKey: 'lang.it' },
-  { value: 'fr', labelKey: 'lang.fr' },
-  { value: 'es', labelKey: 'lang.es' },
+const TABLES = [
+  { id: 'feeds',    labelKey: 'kinds.feed'   },
+  { id: 'diapers',  labelKey: 'kinds.diaper' },
+  { id: 'sleeps',   labelKey: 'kinds.sleep'  },
+  { id: 'vitamins', labelKey: 'kinds.vitamin'},
+  { id: 'weights',  labelKey: 'kinds.weight'},
+  { id: 'heights',  labelKey: 'kinds.height'},
+  { id: 'others',   labelKey: 'kinds.other' }
 ] as const
 
 export default function More(){
-  const { mode, setMode, resolved } = useTheme()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
-  const onTheme = useCallback((m: Mode) => setMode(m), [setMode])
-  const onLang = useCallback(async (lng: string) => {
+  // --- Theme dropdown --------------------------------------------------------
+  const [theme, setTheme] = useState<ThemeMode>(() => (localStorage.getItem(THEME_KEY) as ThemeMode) || 'system')
+  useEffect(() => applyTheme(theme), []) // mount apply
+  function applyTheme(mode: ThemeMode){
+    const root = document.documentElement
+    if (mode === 'system'){
+      root.removeAttribute('data-theme')
+    } else {
+      root.setAttribute('data-theme', mode)
+    }
+    localStorage.setItem(THEME_KEY, mode)
+    setTheme(mode)
+  }
+
+  // --- Language dropdown ------------------------------------------------------
+  const [lang, setLang] = useState<string>(() => localStorage.getItem(LANG_KEY) || i18n.language || 'en')
+  async function changeLang(lng: string){
     await i18n.changeLanguage(lng)
-    // il detector salva già su localStorage
-  }, [i18n])
+    localStorage.setItem(LANG_KEY, lng)
+    setLang(lng)
+  }
 
-  const themeSubtitle =
-    mode === 'system'
-      ? `${t('more.current')}: ${t('more.system')} → ${resolved}`
-      : `${t('more.current')}: ${t(mode === 'dark' ? 'more.dark' : 'more.light')}`
+  // --- Export CSV -------------------------------------------------------------
+  const [busyAll, setBusyAll] = useState(false)
+  const [busyOne, setBusyOne] = useState(false)
+  const [tableSel, setTableSel] = useState<typeof TABLES[number]['id']>('feeds')
+
+  function toCsv(rows: any[]): string {
+    if (!rows || rows.length === 0) return ''
+    const headers = Object.keys(rows[0])
+    const esc = (v: any) => {
+      if (v === null || v === undefined) return ''
+      const s = String(v)
+      const needs = /[",\n]/.test(s)
+      return needs ? `"${s.replace(/"/g, '""')}"` : s
+    }
+    const lines = [
+      headers.join(','),
+      ...rows.map(r => headers.map(h => esc((r as any)[h])).join(','))
+    ]
+    return lines.join('\n')
+  }
+
+  function triggerDownload(filename: string, content: string){
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  }
+
+  async function exportTable(table: typeof TABLES[number]['id']){
+    const q = supabase.from(table).select('*').order('date', { ascending: true })
+    // per time/ordini secondari:
+    if (table === 'sleeps') q.order('start_time', { ascending: true })
+    else if (table !== 'weights' && table !== 'heights') q.order('time', { ascending: true })
+    const { data, error } = await q
+    if (error) throw error
+    const csv = toCsv(data || [])
+    triggerDownload(`${table}.csv`, csv)
+  }
+
+  async function handleExportAll(){
+    try{
+      setBusyAll(true)
+      for (const t of TABLES) {
+        await exportTable(t.id)
+      }
+      alert(t('more.export.done'))
+    }catch(e:any){
+      alert(`${t('more.export.error')}: ${e.message || String(e)}`)
+    }finally{
+      setBusyAll(false)
+    }
+  }
+
+  async function handleExportOne(){
+    try{
+      setBusyOne(true)
+      await exportTable(tableSel)
+      alert(t('more.export.done'))
+    }catch(e:any){
+      alert(`${t('more.export.error')}: ${e.message || String(e)}`)
+    }finally{
+      setBusyOne(false)
+    }
+  }
+
+  // --- Logout ----------------------------------------------------------------
+  async function logout(){
+    await supabase.auth.signOut()
+    window.location.href = '/login'
+  }
 
   return (
-    <div style={{display:'grid', gap:16}}>
+    <div className="content" style={{display:'grid', gap:16}}>
       {/* APP */}
-      <section>
-        <h2 className="section-title">{t('more.app')}</h2>
+      <section className="card" style={{display:'grid', gap:16}}>
+        <div className="muted" style={{fontWeight:700}}>{t('more.app')}</div>
 
         {/* Appearance */}
-        <div className="card" style={{marginBottom:12}}>
-          <div className="list-item header">
-            <div>
-              <div className="item-title">{t('more.appearance')}</div>
-              <div className="item-subtitle">{themeSubtitle}</div>
-            </div>
+        <div>
+          <div style={{marginBottom:6}}>
+            <div style={{fontWeight:600}}>{t('more.appearance')}</div>
+            <div className="muted">{t('more.current')}: {t(`more.${theme}`)}</div>
           </div>
-          <div className="list" role="radiogroup" aria-label={t('more.appearance')}>
-            {THEME_OPTIONS.map((opt) => {
-              const selected = mode === opt.value
-              return (
-                <button
-                  key={opt.value}
-                  className="list-item"
-                  role="radio"
-                  aria-checked={selected}
-                  onClick={() => onTheme(opt.value)}
-                >
-                  <span>{t(opt.labelKey)}</span>
-                  <span aria-hidden="true" style={{ fontWeight: 700 }}>{selected ? '✓' : ''}</span>
-                </button>
-              )
-            })}
-          </div>
+          <select className="input" value={theme} onChange={e=>applyTheme(e.target.value as ThemeMode)}>
+            <option value="system">{t('more.system')}</option>
+            <option value="dark">{t('more.dark')}</option>
+            <option value="light">{t('more.light')}</option>
+          </select>
         </div>
 
         {/* Language */}
-        <div className="card">
-          <div className="list-item header">
-            <div>
-              <div className="item-title">{t('more.language')}</div>
-              <div className="item-subtitle">{t('more.current')}: {t(`lang.${i18n.language as 'en'|'it'|'fr'|'es'}`)}</div>
-            </div>
+        <div>
+          <div style={{marginBottom:6}}>
+            <div style={{fontWeight:600}}>{t('more.language')}</div>
+            <div className="muted">{t('more.current')}: {t(`lang.${lang as 'en'|'it'|'fr'|'es'}`)}</div>
           </div>
-          <div className="list" role="radiogroup" aria-label={t('more.language')}>
-            {LANG_OPTIONS.map((opt) => {
-              const selected = i18n.language.startsWith(opt.value)
-              return (
-                <button
-                  key={opt.value}
-                  className="list-item"
-                  role="radio"
-                  aria-checked={selected}
-                  onClick={() => onLang(opt.value)}
-                >
-                  <span>{t(opt.labelKey)}</span>
-                  <span aria-hidden="true" style={{ fontWeight: 700 }}>{selected ? '✓' : ''}</span>
-                </button>
-              )
-            })}
+          <select className="input" value={lang} onChange={e=>changeLang(e.target.value)}>
+            <option value="en">{t('lang.en')}</option>
+            <option value="it">{t('lang.it')}</option>
+            <option value="fr">{t('lang.fr')}</option>
+            <option value="es">{t('lang.es')}</option>
+          </select>
+        </div>
+
+        {/* Export data (CSV) */}
+        <div>
+          <div style={{marginBottom:6}}>
+            <div style={{fontWeight:600}}>{t('more.export.title')}</div>
+            <div className="muted">{t('more.export.subtitle')}</div>
+          </div>
+
+          <div style={{display:'grid', gap:8}}>
+            <button onClick={handleExportAll} disabled={busyAll}>
+              {busyAll ? t('more.export.progress') : t('more.export.all')}
+            </button>
+
+            <div className="card" style={{display:'grid', gap:8}}>
+              <label>{t('more.export.select')}
+                <select className="input" value={tableSel} onChange={e=>setTableSel(e.target.value as any)}>
+                  {TABLES.map(ti => (
+                    <option key={ti.id} value={ti.id}>{t(ti.labelKey)}</option>
+                  ))}
+                </select>
+              </label>
+              <button onClick={handleExportOne} disabled={busyOne}>
+                {busyOne ? t('more.export.progress') : t('more.export.one')}
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ACCOUNT */}
-      <section>
-        <h2 className="section-title">{t('more.account')}</h2>
-        <div className="card">
-          <button
-            className="btn-danger"
-            onClick={async () => {
-              await supabase.auth.signOut()
-              window.location.href = '/login'
-            }}
-          >
-            {t('auth.logout')}
-          </button>
-        </div>
+      <section className="card" style={{display:'grid', gap:12}}>
+        <div className="muted" style={{fontWeight:700}}>{t('more.account')}</div>
+        <button onClick={logout} style={{background:'#b91c1c'}}>{t('auth.logout')}</button>
       </section>
     </div>
   )
