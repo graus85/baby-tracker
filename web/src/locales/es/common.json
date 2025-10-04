@@ -10,7 +10,17 @@
     "current": "Actual",
     "system": "Sistema",
     "dark": "Oscuro",
-    "light": "Claro"
+    "light": "Claro",
+    "export": {
+      "title": "Exportación de datos (CSV)",
+      "subtitle": "Descarga tus datos registrados como archivos CSV.",
+      "all": "Exportar todas las tablas (archivos CSV)",
+      "one": "Exportar tabla seleccionada",
+      "select": "Seleccionar una tabla",
+      "progress": "Preparando…",
+      "done": "Exportación completada",
+      "error": "Error en la exportación"
+    }
   },
 
   "auth": { "logout": "Cerrar sesión" },
