@@ -14,7 +14,7 @@ export default function Fab({ onClick }: Props){
         width:64, height:64, borderRadius:32,
         background:'#2563eb', color:'#fff', border:'none',
         boxShadow:'0 10px 24px rgba(0,0,0,.35)',
-        fontSize:28, lineHeight:'0'
+        fontSize:28, lineHeight:'0', zIndex:40
       }}
     >+</button>
   )
