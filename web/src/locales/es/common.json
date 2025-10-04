@@ -88,6 +88,10 @@
     "edit": "Editar",
     "duplicate": "Duplicar",
     "delete": "Eliminar",
-    "deleteConfirm": "¿Eliminar este elemento?"
+    "deleteConfirm": "¿Eliminar este elemento?",
+    "duplicated": "Duplicado",
+    "deleted": "Eliminado",
+    "cancel": "Cancelar",
+    "saving": "Guardando…"
   }
 }
