@@ -173,18 +173,17 @@ small{ color: var(--muted); }
 .fab:active{ transform: translateY(1px) scale(.98) }
 
 /* ---- FILTER CHIPS ---- */
-.chips{ display:flex; gap:8px; overflow:auto; padding:2px }
+.chips{ display:flex; flex-wrap:wrap; gap:8px; align-items:center }
 .chip{
-  background: var(--soft);
-  border: 1px solid var(--border);
-  color: var(--fg);
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  white-space: nowrap;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 12px; border-radius:999px; border:1px solid var(--border);
+  background:var(--card); color:var(--fg); font-size:13px;
 }
-.chip-active{
-  background: color-mix(in oklab, var(--acc) 18%, var(--soft));
+.chip-active{ background: var(--soft); }
+.ico-chip{ width:14px; height:14px }
+.badge{
+  background: var(--card); border:1px solid var(--border);
+  border-radius:999px; padding:6px 10px; font-size:12px; color:var(--fg);
 }
 
 /* ---- EVENTS LIST ---- */
