@@ -89,5 +89,9 @@
     "duplicate": "Duplicate",
     "delete": "Delete",
     "deleteConfirm": "Delete this item?"
+    "duplicated": "Duplicated",
+    "deleted": "Deleted",
+    "cancel": "Cancel",
+    "saving": "Saving…"
   }
 }
