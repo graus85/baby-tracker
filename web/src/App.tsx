@@ -6,6 +6,26 @@ import TabBar from './components/TabBar'
 import Fab from './components/Fab'
 import AddPicker from './pages/add/AddPicker'
 import { useTranslation } from 'react-i18next'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Summary from './pages/Summary'
+import DailyLog from './pages/DailyLog'
+import More from './pages/More'
+
+export default function App(){
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/summary" replace />} />
+        <Route path="/summary" element={<Summary />} />
+        <Route path="/daily" element={<DailyLog />} />
+        <Route path="/add" element={<AddPicker />} />
+        <Route path="/more" element={<More />} />
+        {/* fallback */}
+        <Route path="*" element={<Navigate to="/summary" replace />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}
 
 
 function ConfigError() {
