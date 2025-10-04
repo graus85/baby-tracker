@@ -13,9 +13,9 @@
     "light": "Clair",
     "export": {
       "title": "Export des données (CSV)",
-      "subtitle": "Téléchargez vos données suivies au format CSV.",
-      "all": "Exporter toutes les tables (fichiers CSV)",
-      "one": "Exporter la table sélectionnée",
+      "subtitle": "Téléchargez vos données suivies.",
+      "allZip": "Tout exporter (ZIP)",
+      "one": "Exporter la table sélectionnée (CSV)",
       "select": "Choisir une table",
       "progress": "Préparation…",
       "done": "Export terminé",
