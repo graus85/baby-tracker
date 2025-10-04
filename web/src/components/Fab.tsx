@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom'
 type Props = {
   onClick: () => void
   /** route(s) dove mostrare il FAB; default: /daily e /daily-log  */
-  onlyOn = ['/daily', '/daily-log']
+  onlyOn?: string[]
 }
 
 export default function Fab({ onClick, onlyOn = ['/daily', '/daily-log'] }: Props) {
