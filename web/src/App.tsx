@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react'
 import { ThemeWatcher } from './store/theme'
 import TabBar from './components/TabBar'
 import Fab from './components/Fab'
+import AddPicker from './pages/add/AddPicker'
 import { useTranslation } from 'react-i18next'
+
 
 function ConfigError() {
   return (
