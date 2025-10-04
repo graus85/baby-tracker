@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18n from '../i18n'
 import { supabase } from '../lib/supabase'
+import JSZip from 'jszip'
 
 type ThemeMode = 'system' | 'dark' | 'light'
 const THEME_KEY = 'bt_theme'
@@ -42,7 +43,7 @@ export default function More(){
     setLang(lng)
   }
 
-  // --- Export CSV -------------------------------------------------------------
+  // --- Export helpers ---------------------------------------------------------
   const [busyAll, setBusyAll] = useState(false)
   const [busyOne, setBusyOne] = useState(false)
   const [tableSel, setTableSel] = useState<typeof TABLES[number]['id']>('feeds')
@@ -63,8 +64,7 @@ export default function More(){
     return lines.join('\n')
   }
 
-  function triggerDownload(filename: string, content: string){
-    const blob = new Blob([content], { type: 'text/csv;charset=utf-8' })
+  function downloadBlob(filename: string, blob: Blob){
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
@@ -75,38 +75,48 @@ export default function More(){
     URL.revokeObjectURL(url)
   }
 
-  async function exportTable(table: typeof TABLES[number]['id']){
+  async function exportTableCsv(table: typeof TABLES[number]['id']){
     const q = supabase.from(table).select('*').order('date', { ascending: true })
-    // per time/ordini secondari:
     if (table === 'sleeps') q.order('start_time', { ascending: true })
     else if (table !== 'weights' && table !== 'heights') q.order('time', { ascending: true })
     const { data, error } = await q
     if (error) throw error
-    const csv = toCsv(data || [])
-    triggerDownload(`${table}.csv`, csv)
+    return { csv: toCsv(data || []), count: data?.length ?? 0 }
   }
 
-  async function handleExportAll(){
+  // ---- NEW: Export all tables into ONE ZIP file ------------------------------
+  async function handleExportAllZip(){
     try{
       setBusyAll(true)
-      for (const t of TABLES) {
-        await exportTable(t.id)
+      const zip = new JSZip()
+      const meta: Record<string, any> = { exportedAt: new Date().toISOString(), tables: {} }
+
+      for (const tdef of TABLES){
+        const { csv, count } = await exportTableCsv(tdef.id)
+        meta.tables[tdef.id] = { rows: count }
+        zip.file(`${tdef.id}.csv`, csv || '')
       }
+      zip.file('metadata.json', JSON.stringify(meta, null, 2))
+
+      const blob = await zip.generateAsync({ type: 'blob' })
+      downloadBlob('baby-tracker-export.zip', blob)
       alert(t('more.export.done'))
     }catch(e:any){
-      alert(`${t('more.export.error')}: ${e.message || String(e)}`)
+      alert(`${t('more.export.error')}: ${e?.message || String(e)}`)
     }finally{
       setBusyAll(false)
     }
   }
 
+  // ---- Export single table CSV (rimane disponibile) -------------------------
   async function handleExportOne(){
     try{
       setBusyOne(true)
-      await exportTable(tableSel)
+      const { csv } = await exportTableCsv(tableSel)
+      downloadBlob(`${tableSel}.csv`, new Blob([csv], { type: 'text/csv;charset=utf-8' }))
       alert(t('more.export.done'))
     }catch(e:any){
-      alert(`${t('more.export.error')}: ${e.message || String(e)}`)
+      alert(`${t('more.export.error')}: ${e?.message || String(e)}`)
     }finally{
       setBusyOne(false)
     }
@@ -151,7 +161,7 @@ export default function More(){
           </select>
         </div>
 
-        {/* Export data (CSV) */}
+        {/* Export data (ZIP + CSV singola) */}
         <div>
           <div style={{marginBottom:6}}>
             <div style={{fontWeight:600}}>{t('more.export.title')}</div>
@@ -159,8 +169,8 @@ export default function More(){
           </div>
 
           <div style={{display:'grid', gap:8}}>
-            <button onClick={handleExportAll} disabled={busyAll}>
-              {busyAll ? t('more.export.progress') : t('more.export.all')}
+            <button onClick={handleExportAllZip} disabled={busyAll}>
+              {busyAll ? t('more.export.progress') : t('more.export.allZip')}
             </button>
 
             <div className="card" style={{display:'grid', gap:8}}>
