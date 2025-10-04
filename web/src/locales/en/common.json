@@ -13,9 +13,9 @@
     "light": "Light",
     "export": {
       "title": "Data export (CSV)",
-      "subtitle": "Download your tracked data as CSV files.",
-      "all": "Export all tables (CSV files)",
-      "one": "Export selected table",
+      "subtitle": "Download your tracked data.",
+      "allZip": "Export everything (ZIP)",
+      "one": "Export selected table (CSV)",
       "select": "Select a table",
       "progress": "Preparing…",
       "done": "Export completed",
