@@ -13,9 +13,9 @@
     "light": "Chiaro",
     "export": {
       "title": "Esportazione dati (CSV)",
-      "subtitle": "Scarica i tuoi dati tracciati in file CSV.",
-      "all": "Esporta tutte le tabelle (file CSV)",
-      "one": "Esporta tabella selezionata",
+      "subtitle": "Scarica i tuoi dati tracciati.",
+      "allZip": "Esporta tutto (ZIP)",
+      "one": "Esporta tabella selezionata (CSV)",
       "select": "Seleziona una tabella",
       "progress": "Preparazione…",
       "done": "Esportazione completata",
