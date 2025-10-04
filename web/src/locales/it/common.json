@@ -10,7 +10,17 @@
     "current": "Corrente",
     "system": "Sistema",
     "dark": "Scuro",
-    "light": "Chiaro"
+    "light": "Chiaro",
+    "export": {
+      "title": "Esportazione dati (CSV)",
+      "subtitle": "Scarica i tuoi dati tracciati in file CSV.",
+      "all": "Esporta tutte le tabelle (file CSV)",
+      "one": "Esporta tabella selezionata",
+      "select": "Seleziona una tabella",
+      "progress": "Preparazione…",
+      "done": "Esportazione completata",
+      "error": "Errore durante l'esportazione"
+    }
   },
 
   "auth": { "logout": "Esci" },
