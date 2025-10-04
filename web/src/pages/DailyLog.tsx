@@ -1,101 +1,85 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { todayISO } from '../lib/datetime'
-import { useEventsRange, type Kind } from '../lib/events'
-import { IconForKind } from '../components/Icons'
-import { truncate } from '../lib/format'
-import { deleteByKind, duplicateByKind } from '../lib/api'
-import { useNavigate } from 'react-router-dom'
+import { useEventsRange, type EventItem } from '../lib/events'
+import { IconForKind, type Kind } from '../components/Icons'
+import EventRow from '../components/EventRow'
 
-type Tab = 'all' | Kind
-const KIND_ORDER: Tab[] = ['all','feed','diaper','sleep','vitamin','weight','height','other']
+const ALL_KINDS: Kind[] = ['feed','diaper','sleep','vitamin','weight','height','other']
 
-export default function DailyLog(){
+export default function DailyLog() {
   const { t } = useTranslation()
   const today = todayISO()
+
   const [from, setFrom] = useState(today)
   const [to, setTo] = useState(today)
-  const [tab, setTab] = useState<Tab>('all')
-  const nav = useNavigate()
+  const [selected, setSelected] = useState<Set<Kind>>(new Set(ALL_KINDS))
 
-  const { data, isLoading, error, refetch } = useEventsRange({ from, to })
+  const { data, isLoading, error } = useEventsRange({ from, to })
 
-  const filtered = useMemo(()=> {
-    const items = data ?? []
-    if (tab === 'all') return items
-    return items.filter(e => e.kind === tab)
-  }, [data, tab])
+  const filtered: EventItem[] = useMemo(() => {
+    const src = data ?? []
+    return src.filter(ev => selected.has(ev.kind as Kind))
+  }, [data, selected])
 
-  async function onDelete(kind: Kind, id: string){
-    if (!confirm(t('actions.deleteConfirm') as string)) return
-    try { await deleteByKind(kind, id); await refetch() }
-    catch(e:any){ alert(e.message || String(e)) }
+  function toggle(k: Kind) {
+    setSelected(prev => {
+      const n = new Set(prev)
+      if (n.has(k)) n.delete(k); else n.add(k)
+      if (n.size === 0) ALL_KINDS.forEach(x => n.add(x)) // mai 0
+      return n
+    })
   }
-  async function onDuplicate(kind: Kind, id: string){
-    try { await duplicateByKind(kind, id); await refetch() }
-    catch(e:any){ alert(e.message || String(e)) }
-  }
-  function onEdit(kind: Kind, id: string){
-    nav(`/add/${kind}?id=${id}`)
-  }
+  function selectAll() { setSelected(new Set(ALL_KINDS)) }
+
+  // azioni (stub pronte a collegarsi ai form)
+  function onEdit(_ev: EventItem){ /* open edit modal */ }
+  function onDuplicate(_ev: EventItem){ /* duplicate logic */ }
+  function onDelete(_ev: EventItem){ /* delete logic */ }
 
   return (
-    <div className="content">
-      {/* Filter bar */}
-      <div className="card" style={{display:'grid', gap:8, marginBottom:12}}>
-        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:8}}>
-          <label>{t('filters.from')}<input className="input" type="date" value={from} onChange={e=>setFrom(e.target.value)} /></label>
-          <label>{t('filters.to')}<input className="input" type="date" value={to} onChange={e=>setTo(e.target.value)} /></label>
+    <div className="content content--safe">
+      {/* FILTRI */}
+      <section className="card card--pad">
+        <div className="grid-2">
+          <label>
+            {t('filters.from')}
+            <input className="input input--date" type="date" value={from} onChange={e=>setFrom(e.target.value)} />
+          </label>
+          <label>
+            {t('filters.to')}
+            <input className="input input--date" type="date" value={to} onChange={e=>setTo(e.target.value)} />
+          </label>
         </div>
 
-        <div className="chips">
-          {KIND_ORDER.map(k=>{
-            const active = tab === k
+        <div className="chips" role="group" aria-label="kinds filter" style={{marginTop:8}}>
+          <button className={`chip ${selected.size===ALL_KINDS.length ? 'chip-active' : ''}`} onClick={selectAll}>{t('filters.all')}</button>
+          {ALL_KINDS.map(k => {
+            const active = selected.has(k)
             return (
-              <button
-                key={k}
-                className={`chip ${active ? 'chip-active' : ''}`}
-                onClick={()=>setTab(k)}
-                aria-pressed={active}
-                title={k === 'all' ? t('filters.all')! : t(`kinds.${k}`)!}
-              >
-                {k === 'all' ? t('filters.all') : (
-                  <>
-                    <IconForKind kind={k as Kind} className="ico-chip" />
-                    <span>{t(`kinds.${k}`)}</span>
-                  </>
-                )}
+              <button key={k} className={`chip ${active ? 'chip-active':''}`} onClick={()=>toggle(k)} title={t(`kinds.${k}`)!} aria-pressed={active}>
+                <IconForKind kind={k} className="ico-chip" />
+                <span>{t(`kinds.${k}`)}</span>
               </button>
             )
           })}
         </div>
-      </div>
+      </section>
 
-      {/* List */}
+      {/* LISTA EVENTI */}
       {isLoading && <div className="card">{t('state.loading')}</div>}
       {error && <div className="card" style={{color:'tomato'}}>{String((error as any).message || error)}</div>}
-      {!isLoading && filtered?.length === 0 && (
-        <div className="card">{t('state.empty')}</div>
-      )}
+      {!isLoading && filtered.length === 0 && <div className="card">{t('state.empty')}</div>}
 
-      <div className="vstack">
-        {filtered?.map(ev=>(
-          <article key={`${ev.kind}-${ev.id}`} className="event-card">
-            <div className="event-icon">
-              <IconForKind kind={ev.kind} className="ico-md" />
-            </div>
-            <div className="event-body">
-              <div className="event-title">{t(`kinds.${ev.kind}`, { defaultValue: ev.title })}</div>
-              <div className="event-sub">{truncate(ev.subtitle, 120)}</div>
-              {ev.note && <div className="event-note">“{truncate(ev.note, 140)}”</div>}
-              <div className="event-actions">
-                <button className="btn" onClick={()=>onEdit(ev.kind, ev.id)}>{t('actions.edit')}</button>
-                <button className="btn" onClick={()=>onDuplicate(ev.kind, ev.id)}>{t('actions.duplicate')}</button>
-                <button className="btn btn-danger" onClick={()=>onDelete(ev.kind, ev.id)}>{t('actions.delete')}</button>
-              </div>
-            </div>
-            <div className="event-time">{ev.time}</div>
-          </article>
+      <div className="stack">
+        {filtered.map(ev => (
+          <EventRow
+            key={ev.id}
+            event={ev}
+            onEdit={()=>onEdit(ev)}
+            onDuplicate={()=>onDuplicate(ev)}
+            onDelete={()=>onDelete(ev)}
+          />
         ))}
       </div>
     </div>
