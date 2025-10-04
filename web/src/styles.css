@@ -347,4 +347,37 @@ label{ display:grid; gap:6px; font-weight:600 }
   box-shadow: 0 10px 30px rgba(0,0,0,.4);
 }
 
+/* ---- Bottom Sheet (AddEvent) --------------------------------------------- */
+.sheet{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--card);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding: 16px;
+  max-height: 85vh;
+  overflow: auto;
+  width: min(720px, 100%);
+  margin: 0 auto;
+  box-shadow: 0 -14px 30px rgba(0,0,0,.35);
+}
+.sheet-grid{
+  display:grid; gap:8px;
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 380px){
+  .sheet-grid{ grid-template-columns: repeat(2, 1fr); }
+}
+.sheet-tile{
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--soft);
+}
+.sheet-form{ display:grid; gap:8px; }
+
 
